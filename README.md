@@ -10,10 +10,24 @@ An openGL based GUI framework built for desktop Golang applications.
 ![Go-gl](https://avatars.githubusercontent.com/u/2505184?s=48&v=4)
 
 ## Contents 
-- Usage
 - Dependencies 
-- Documentation
-  - Variables & Constants
-  - Methods
+- Usage
+  - Creating Windows
+  - Components
+    - Button
+    - Checkbox
+    - Radio Button
+    - Toggle
+    - Label
+  - Compositions
+    - Box Composition
+    - Row Composition
+    - Column Composition
+  - Event Handling
+  - Mouse Handling 
 - Examples
+  - Box Layout Example
+  - Column Layout Example
+  - Row Layout Example
+  - Componisition Example 
 
