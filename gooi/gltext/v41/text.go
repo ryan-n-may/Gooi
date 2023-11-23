@@ -27,6 +27,7 @@ type Text struct {
 
 	// final position on screen
 	finalPosition mgl32.Vec3
+	zPosition float32
 
 	// text color
 	color mgl32.Vec3
@@ -92,7 +93,7 @@ func NewText(f *Font, scaleMin, scaleMax float32) (t *Text) {
 	glfloat_size := int32(4)
 
 	// stride of the buffered data
-	xy_count := int32(2)
+	xy_count := int32(2) 						// xyz
 	stride := xy_count + int32(2)
 
 	gl.GenVertexArrays(1, &t.vao)
@@ -192,6 +193,8 @@ func (t *Text) SetString(fs string, argv ...interface{}) {
 	t.RuneCount = len(indices)
 	t.vboData = make([]float32, t.vboIndexCount, t.vboIndexCount)
 	t.eboData = make([]int32, t.eboIndexCount, t.eboIndexCount)
+	fmt.Printf("Length of vboData is %v\n", len(t.vboData))
+	fmt.Printf("Length of eboData is %v\n", len(t.eboData))
 
 	// generate the basic vbo data and bounding box
 	// center the vbo data around the orthographic (0,0) point
@@ -245,6 +248,8 @@ func (t *Text) SetPosition(v mgl32.Vec3) {
 	// transform to orthographic coordinates ranged -1 to 1 for the shader
 	t.finalPosition[0] = v.X() / (t.Font.WindowWidth / 2)
 	t.finalPosition[1] = v.Y() / (t.Font.WindowHeight / 2)
+	t.finalPosition[2] = v.Z() 
+	t.zPosition = float32(v.Z())
 	if gltext.IsDebug {
 		t.BoundingBox.finalPosition[0] = v.X() / (t.Font.WindowWidth / 2)
 		t.BoundingBox.finalPosition[1] = v.Y() / (t.Font.WindowHeight / 2)
@@ -280,6 +285,7 @@ func (t *Text) Draw() {
 
 	// uniforms
 	gl.Uniform1i(t.Font.fragmentTextureUniform, 0)
+	gl.Uniform1f(t.Font.zPositionUniform, t.zPosition)
 	gl.Uniform1f(t.Font.fadeoutUniform, t.FadeOutPerFrame*t.FadeOutFrameCount)
 	gl.Uniform4fv(t.Font.colorUniform, 1, &t.color[0])
 	gl.Uniform2fv(t.Font.finalPositionUniform, 1, &t.finalPosition[0])
@@ -325,6 +331,7 @@ func (t *Text) Hide() {
 func (t *Text) centerTheData(lowerLeft gltext.Point) (err error) {
 	length := len(t.vboData)
 	for index := 0; index < length; {
+
 		// index (0,0)
 		t.vboData[index] += lowerLeft.X
 		index++

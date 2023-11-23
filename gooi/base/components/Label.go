@@ -87,11 +87,7 @@ func (l *Label_Struct) SetDisplayText(s string) { l.LabelText = s }
 func (l *Label_Struct) GetDisplayText() string { return l.LabelText }
 
 func (l *Label_Struct) SetPosZ(z float32) { 
-	if z < 1.0 {
-		l.Hidetext()
-	} else {
-		l.Showtext()
-	}
+	l.Label_Text.Text.SetPosition(mgl32.Vec3{l.Pos_x, l.Pos_y, z})
 	l.Pos_z = z
 }
 func (l *Label_Struct) GetPosZ() float32 { 

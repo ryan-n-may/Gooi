@@ -18,6 +18,8 @@ type Tabs_Struct struct {
 	Master_Pos_z 		float32
 	Master_Height 		*float32
 	Master_Width 		*float32
+
+	Labels 				[]string
 	
 	TabButtonRow 		*Row_Struct
 	Buttons 			[]*comp.Button_Struct
@@ -29,7 +31,7 @@ type Tabs_Struct struct {
 	MouseHandler 		intf.MouseHandler_Interface
 }
 
-func NewTabs(name string, canvas *comp.Canvas_Struct, eventhandler intf.EventHandler_Interface, mousehandler intf.MouseHandler_Interface, labels []float32, posx, posy float32, width, height *float32) *Tabs_Struct {
+func NewTabs(name string, canvas *comp.Canvas_Struct, eventhandler intf.EventHandler_Interface, mousehandler intf.MouseHandler_Interface, labels []string, posx, posy float32, width, height *float32) *Tabs_Struct {
 	log.Println("new [Tabs].")
 	var tabs = Tabs_Struct{}
 	tabs.TabsName = name
@@ -39,11 +41,12 @@ func NewTabs(name string, canvas *comp.Canvas_Struct, eventhandler intf.EventHan
 	tabs.Master_Height = height
 	tabs.Master_Width = width
 	tabs.MouseHandler = mousehandler
+	tabs.Labels = labels
 
-	tabs.Tabs = make([]*Box_Struct, len(labels))
+	tabs.Tabs = make([]*Box_Struct, len(tabs.Labels))
 	tabs.TabStack = NewStackComposition(fmt.Sprintf("TabStack_%s", tabs.TabsName), tabs.Master_Pos_x, tabs.Master_Pos_y, tabs.Master_Width, tabs.Master_Height, cons.ALIGN_TOP_LEFT)
 	
-	tabs.Buttons = make([]*comp.Button_Struct, len(labels))
+	tabs.Buttons = make([]*comp.Button_Struct, len(tabs.Labels))
 	tabs.TabButtonRow = NewRowComposition(fmt.Sprintf("TabButtonRow_%s", tabs.TabsName), tabs.Master_Pos_x, tabs.Master_Pos_y, 2, cons.ALIGN_CENTRE_ROW)
 
 	tabs.TabContainer = NewHorisontalDivision(fmt.Sprintf("TabConatiner_%s", tabs.TabsName), []float32{0.9, 0.1}, tabs.Master_Pos_x, tabs.Master_Pos_y, tabs.Master_Width, tabs.Master_Height)
@@ -70,7 +73,7 @@ func NewTabs(name string, canvas *comp.Canvas_Struct, eventhandler intf.EventHan
 
 		// THIS BUTTON IS A PLACEHOLDER
 		tabs.Buttons[i] = comp.CreateButton(
-			fmt.Sprintf("TabButton_%v", i),
+			tabs.Labels[i],
 			tabs.TabCanvas, 
 			100, 30, 300, 50, 
 			10,

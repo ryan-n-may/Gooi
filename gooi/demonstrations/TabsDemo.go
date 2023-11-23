@@ -55,7 +55,7 @@ func main() {
 		32,
 	)
 
-	var tabs = ompo.NewTabs("Tabs", A.WindowCanvas, E, ML, []float32{0,0}, 0.0, 0.0, window_w, window_h)
+	var tabs = ompo.NewTabs("Tabs", A.WindowCanvas, E, ML, []string{"Settings", "Display"}, 0.0, 0.0, window_w, window_h)
 
 	tabs.AddDrawable(Button1, 1)
 	tabs.AddDrawable(Label, 0)

@@ -17,12 +17,12 @@ var fontVertexShaderSource string = `
 uniform mat4 scale_matrix;
 uniform mat4 orthographic_matrix;
 uniform vec2 final_position;
+uniform float z_position;
 
 in vec4 centered_position;
 in vec2 uv;
 
 out vec2 fragment_uv;
-
 
 // The orthographic projection uses a lower left-hand point of (0,0)
 // 1) We center the text on screen.
@@ -33,7 +33,7 @@ out vec2 fragment_uv;
 void main() {
   fragment_uv = uv;
   vec4 scaled = scale_matrix * orthographic_matrix * centered_position;
-  gl_Position = vec4(scaled.x + final_position.x, scaled.y + final_position.y, scaled.z, scaled.w);
+  gl_Position = vec4(scaled.x + final_position.x, scaled.y + final_position.y,  2 * z_position, scaled.w);
 }
 ` + "\x00"
 
@@ -68,6 +68,7 @@ type Font struct {
 
 	// The final screen position post-scaling
 	finalPositionUniform int32
+	zPositionUniform int32
 
 	// Position of the shaders fragment texture variable
 	fragmentTextureUniform int32
@@ -162,6 +163,7 @@ func NewFont(config *gltext.FontConfig) (f *Font, err error) {
 
 	// uniforms
 	f.finalPositionUniform = gl.GetUniformLocation(f.program, gl.Str("final_position\x00"))
+	f.zPositionUniform = gl.GetUniformLocation(f.program, gl.Str("z_position\x00"))
 	f.orthographicMatrixUniform = gl.GetUniformLocation(f.program, gl.Str("orthographic_matrix\x00"))
 	f.scaleMatrixUniform = gl.GetUniformLocation(f.program, gl.Str("scale_matrix\x00"))
 	f.fragmentTextureUniform = gl.GetUniformLocation(f.program, gl.Str("fragment_texture\x00"))
@@ -174,7 +176,7 @@ func NewFont(config *gltext.FontConfig) (f *Font, err error) {
 func (f *Font) ResizeWindow(width float32, height float32) {
 	f.WindowWidth = width
 	f.WindowHeight = height
-	f.OrthographicMatrix = mgl32.Ortho(0, f.WindowWidth, 0, f.WindowHeight, 1.0, 0.0)
+	f.OrthographicMatrix = mgl32.Ortho(0, f.WindowWidth, 0, f.WindowHeight, 0.0, 1.0)
 }
 
 func (f *Font) Release() {

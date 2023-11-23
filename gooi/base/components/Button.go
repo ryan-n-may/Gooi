@@ -284,7 +284,7 @@ func (b *Button_Struct) GetClickable() bool { return b.Clickable }
 func (b *Button_Struct) SetPos(x, y float32) { 
 	b.Pos_x = x
 	b.Pos_y = y
-	b.Button_Text.Text.SetPosition(mgl32.Vec3{b.Pos_x + b.Width/2, b.Pos_y + b.Height/2, 1.0}) 
+	b.Button_Text.Text.SetPosition(mgl32.Vec3{b.Pos_x + b.Width/2, b.Pos_y + b.Height/2, b.Pos_z*2}) 
 	b.GeneratePolygons()
 	b.SetClickableBounds(b.Pos_x, b.Pos_x+b.Width, b.Pos_y, b.Pos_y+b.Height)
 	b.GetCanvas().RefreshCanvas()	
@@ -320,11 +320,7 @@ func (b *Button_Struct) GetClickableBounds() (int, int, int, int, int) {
 	return b.Bounds_X_min, b.Bounds_X_max, b.Bounds_Y_min, b.Bounds_Y_max, int(b.Pos_z)
 }
 func (b *Button_Struct) SetPosZ(z float32){
-	if z >= 1.0 {
-		b.Hidetext()
-	} else {
-		b.Showtext()
-	}
+	b.Button_Text.Text.SetPosition(mgl32.Vec3{b.Pos_x, b.Pos_y, z*2})
 	b.Pos_z = z
 }
 func (b *Button_Struct) GetPosZ() float32 {
