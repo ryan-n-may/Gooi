@@ -9,10 +9,13 @@ type Canvas_Interface interface {
 	SetWindow(Window_Interface)
 	GetWindow() Window_Interface
 
+	GetWidth() float32
+	GetHeight() float32
+
 	GetPrograms() uint32
 
-	AddComponent(Drawable_Interface)
-	SetComponents([]Drawable_Interface)
+	AddComponent(Displayable)
+	SetComponents([]Displayable)
 
 	SetBackgroundColour([3]float32)
 

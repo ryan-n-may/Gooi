@@ -12,12 +12,26 @@ type Box_Struct struct {
 	Master_Pos_z float32
 	Master_Height *float32
 	Master_Width *float32
+
+	Sub_Width *float32
+	Sub_Height *float32
+
 	Alignment int
 	Drawables []intf.Drawable_Interface
 }
+func (box *Box_Struct) SetSubWidth(w *float32){
+	box.Sub_Width = w
+}
+func (box *Box_Struct) SetSubHeight(h *float32){
+	box.Sub_Height = h
+}
+
 func NewBoxComposition(name string, x, y float32, width, height *float32, alignment int) (*Box_Struct) {
 		log.Println("new [Box].")
 		var box = Box_Struct{}
+		var zero float32 = 0
+		box.SetSubWidth(&zero)
+		box.SetSubHeight(&zero)
 		box.ColumnName = name
 		box.Master_Pos_x = x
 		box.Master_Pos_y = y
@@ -29,6 +43,8 @@ func NewBoxComposition(name string, x, y float32, width, height *float32, alignm
 }
 func (box *Box_Struct) AddDrawable(drawable intf.Drawable_Interface){
 	box.Drawables[0] = drawable
+	box.Drawables[0].SetSubWidth(box.Master_Width)
+	box.Drawables[0].SetSubHeight(box.Master_Height)
 	box.MoveComponents()
 }
 func (box *Box_Struct) GetDrawables() intf.Drawable_Interface {
@@ -93,6 +109,14 @@ func (box *Box_Struct) SetWidth(w float32) {
 
 func (box *Box_Struct) SetHeight(h float32) {
 	box.Master_Height = &h
+}
+
+func (box *Box_Struct) GetWidth() *float32 {
+	return box.Master_Width 
+}
+
+func (box *Box_Struct) GetHeight() *float32 {
+	return box.Master_Height 
 }
 
 func (box *Box_Struct) GetPos() (float32, float32){

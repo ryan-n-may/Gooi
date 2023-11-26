@@ -68,7 +68,7 @@ func GrantiteTheme() *Theme {
 	g.ButtonBorderThickness = 2
 	g.ButtonAnimationTime = 200
 	// Font 
-	g.FontPath = "Base/Components/Fonts/luxi.ttf"
+	g.FontPath = "base/components/fonts/luxi.ttf"
 	g.FontName = "luxi"
 	g.FontColour = [3]float32{210, 210, 210} // very light gray
 	// Text field

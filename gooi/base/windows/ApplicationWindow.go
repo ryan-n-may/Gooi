@@ -155,7 +155,7 @@ func (A* ApplicationWindow_Struct) mouseButtonCallback(
 	mods glfw.ModifierKey) {
 		log.Println("Mouse clicked in [Window].")
 		var mouse_x, mouse_y, pressed = A.GetMouseHandler().GetClickData(A.Window)
-		A.GetMouseHandler().CheckClick(int(mouse_x), int(mouse_y), pressed, mods)
+		A.GetMouseHandler().CheckClick(mouse_x, mouse_y, pressed, mods)
 		A.GetWindow().Show()
 		log.Println("Refreshing [Canvas].")
 		A.GetWindowCanvas().RefreshCanvas()

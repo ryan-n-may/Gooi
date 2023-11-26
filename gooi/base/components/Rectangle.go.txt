@@ -6,9 +6,7 @@ package components
  **/
 import (
 	gl 		"github.com/go-gl/gl/v4.1-core/gl"
-	
 	intf 	"gooi/interfaces"
-	
 	log 	"log"
 	fmt 	"fmt"
 )
@@ -21,7 +19,7 @@ type Rectangle_Struct struct {
 	VAO 			[]intf.Drawing_Struct
 	Canvas 		 	*Canvas_Struct
 	
-	Width, Height 	float32
+	Width, Height 	*float32
 	Pos_x, Pos_y 	float32
 	Pos_z 			float32
 	
@@ -31,6 +29,15 @@ type Rectangle_Struct struct {
 	WindowWidth_Initial 	float32
 	
 	BackgroundColour [3]float32
+
+	Sub_Width, Sub_Height *float32
+}
+
+func (c *Rectangle_Struct) SetSubWidth(w *float32){
+	c.Sub_Width = w
+}
+func (c *Rectangle_Struct) SetSubHeight(h *float32){
+	c.Sub_Height = h
 }
 /**
  * CreateButton
@@ -38,7 +45,7 @@ type Rectangle_Struct struct {
  **/
 func CreateRectangle(
 	canvas 			*Canvas_Struct, 
-	width, height 	float32,
+	width, height 	*float32,
 	pos_x, pos_y 	float32, 
 	colour  		[3]float32,
 ) *Rectangle_Struct {
@@ -70,8 +77,8 @@ func CreateRectangle(
 func (r *Rectangle_Struct) GeneratePolygons(){
 	r.VAO = make([]intf.Drawing_Struct, 2)
 	// Border rectangles 
-	r.VAO[0] = intf.Drawing_Struct{ intf.GenerateRectangle(r, r.BackgroundColour, r.Width, r.Height, r.Pos_x, r.Pos_y, r.Pos_z, r.WindowHeight_Initial, r.WindowWidth_Initial), gl.TRIANGLES }
-	r.VAO[1] = intf.Drawing_Struct{ intf.GenerateRectangle(r, r.BackgroundColour, r.Width, r.Height, r.Pos_x, r.Pos_y, r.Pos_z, r.WindowHeight_Initial, r.WindowWidth_Initial), gl.TRIANGLES }
+	r.VAO[0] = intf.Drawing_Struct{ intf.GenerateRectangle(r, r.BackgroundColour, *r.Width, *r.Height, r.Pos_x, r.Pos_y, r.Pos_z, r.WindowHeight_Initial, r.WindowWidth_Initial), gl.TRIANGLES }
+	r.VAO[1] = intf.Drawing_Struct{ intf.GenerateRectangle(r, r.BackgroundColour, *r.Width, *r.Height, r.Pos_x, r.Pos_y, r.Pos_z, r.WindowHeight_Initial, r.WindowWidth_Initial), gl.TRIANGLES }
 }
 // Draw()
 // This method draws the VAO array to gl using the canvas program.
@@ -95,6 +102,19 @@ func (r *Rectangle_Struct) Redraw() {
 	// Draw button text (Uses FontProg program)
 	// Modified glText implementation:
 	//b.Button_Text.Text.Font.ResizeWindow(*b.WindowWidth, *b.WindowHeight)
+}
+func (r *Rectangle_Struct) SetWidth(width *float32) {
+	r.Width = width
+	fmt.Printf("Width is given as %d\n", *width)
+}
+func (r *Rectangle_Struct) SetHeight(height *float32) {
+	r.Height = height
+}
+func (r *Rectangle_Struct) GetWidth() *float32 {
+	return r.Width
+}
+func (r *Rectangle_Struct) GetHeight() *float32 {
+	return r.Height
 }
 // Move()
 // This method moves the button and the clickable area of the button.

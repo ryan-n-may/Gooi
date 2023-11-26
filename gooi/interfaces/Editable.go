@@ -11,11 +11,7 @@ type Editable_Interface interface {
 	GetCursorIndex() int
 	SetCursorIndex(int) 
 
-	SetName(string)
-	GetName() string
-
 	IsMaxLength() bool
 
-	GeneratePolygons()
 }
 

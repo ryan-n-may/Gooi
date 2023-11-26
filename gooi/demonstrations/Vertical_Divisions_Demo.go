@@ -2,14 +2,14 @@ package main
 
 import (
 	fmt  		"fmt"
-	event 		"GUI/Base/Event"
-	comp 		"GUI/Base/Components"
-	listeners 	"GUI/Base/Listeners"
-	windows 	"GUI/Base/Windows"
-	intf 		"GUI/Interfaces"
-	ompo   		"GUI/Base/Compositions"
-	cons        "GUI/Base/Constants"
-	colours     "GUI/Base/Colours"
+	event 		"gooi/base/event"
+	comp 		"gooi/base/components"
+	listeners 	"gooi/base/listeners"
+	windows 	"gooi/base/windows"
+	intf 		"gooi/interfaces"
+	ompo   		"gooi/base/compositions"
+	cons        "gooi/base/constants"
+	colours     "gooi/base/colours"
 )
 
 

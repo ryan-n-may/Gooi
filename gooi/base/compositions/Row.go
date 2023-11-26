@@ -10,13 +10,26 @@ type Row_Struct struct {
 	Master_Pos_y float32
 	Master_Height float32
 	Master_Width float32
+
+	Sub_Width *float32
+	Sub_Height *float32
+
 	Padding float32
 	Alignment int
 	Drawables []intf.Drawable_Interface
 }
+func (row *Row_Struct) SetSubWidth(w *float32){
+	row.Sub_Width = w
+}
+func (row *Row_Struct) SetSubHeight(h *float32){
+	row.Sub_Height = h
+}
 func NewRowComposition(name string, pos_x, pos_y, padding float32, alignment int) (*Row_Struct) {
 		log.Println("new [Row].")
 		var row = Row_Struct{}
+		var zero float32 = 0 
+		row.SetSubWidth(&zero)
+		row.SetSubHeight(&zero)
 		row.RowName = name
 		row.Master_Pos_x = pos_x
 		row.Master_Pos_y = pos_y
@@ -28,6 +41,9 @@ func NewRowComposition(name string, pos_x, pos_y, padding float32, alignment int
 		return &row
 }
 func (row *Row_Struct) AddDrawable(drawable intf.Drawable_Interface){
+	drawable.SetSubHeight(row.Sub_Height)
+	var width, _ = drawable.GetBounds()
+	drawable.SetSubWidth(&width)
 	row.Drawables = append(row.Drawables, drawable)
 	row.MoveComponents()
 }

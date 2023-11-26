@@ -12,12 +12,25 @@ type Stack_Struct struct {
 	Master_Pos_z float32
 	Master_Height *float32
 	Master_Width *float32
+
+	Sub_Width *float32
+	Sub_Height *float32
+
 	Alignment int
 	Drawables []intf.Drawable_Interface
+}
+func (box *Stack_Struct) SetSubWidth(w *float32){
+	box.Sub_Width = w
+}
+func (box *Stack_Struct) SetSubHeight(h *float32){
+	box.Sub_Height = h
 }
 func NewStackComposition(name string, x, y float32, width, height *float32, alignment int) (*Stack_Struct) {
 		log.Println("new [Stack].")
 		var box = Stack_Struct{}
+		var zero float32 = 0 
+		box.SetSubWidth(&zero)
+		box.SetSubHeight(&zero)
 		box.StackName = name
 		box.Master_Pos_x = x
 		box.Master_Pos_y = y
@@ -28,6 +41,8 @@ func NewStackComposition(name string, x, y float32, width, height *float32, alig
 		return &box
 }
 func (box *Stack_Struct) AddDrawable(drawable intf.Drawable_Interface){
+	drawable.SetSubWidth(box.Sub_Width)
+	drawable.SetSubHeight(box.Sub_Height)
 	box.Drawables = append(box.Drawables, drawable)
 	box.MoveComponents()
 }

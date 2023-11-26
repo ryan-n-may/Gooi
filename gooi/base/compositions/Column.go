@@ -11,13 +11,26 @@ type Column_Struct struct {
 	Master_Pos_y float32
 	Master_Height float32
 	Master_Width float32
+
+	Sub_Width *float32
+	Sub_Height *float32
+
 	Padding float32
 	Alignment int
 	Drawables []intf.Drawable_Interface
 }
+func (col *Column_Struct) SetSubWidth(w *float32){
+	col.Sub_Width = w
+}
+func (col *Column_Struct) SetSubHeight(h *float32){
+	col.Sub_Height = h
+}
 func NewColumnComposition(name string, pos_x, pos_y, padding float32, alignment int) (*Column_Struct) {
 		log.Println("new [Column].")
 		var col = Column_Struct{}
+		var zero float32 = 0 
+		col.SetSubWidth(&zero)
+		col.SetSubHeight(&zero)
 		col.ColumnName = name
 		col.Master_Pos_x = pos_x
 		col.Master_Pos_y = pos_y
@@ -29,6 +42,9 @@ func NewColumnComposition(name string, pos_x, pos_y, padding float32, alignment 
 		return &col
 }
 func (col *Column_Struct) AddDrawable(drawable intf.Drawable_Interface){
+	drawable.SetSubWidth(col.Sub_Width)
+	var _, height = drawable.GetBounds()
+	drawable.SetSubHeight(&height)
 	col.Drawables = append(col.Drawables, drawable)
 	col.MoveComponents()
 }

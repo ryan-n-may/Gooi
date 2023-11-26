@@ -56,7 +56,7 @@ func (kh *KeyHandler_Struct) AddKeyEvent(key glfw.Key, mod glfw.ModifierKey){
 			} else {
 				kh.GetFocus().SetCursorIndex(cursor_pos)
 			}
-			kh.GetFocus().GeneratePolygons()
+			//kh.GetFocus().GeneratePolygons()
 		// Shift key
 		} else if kh.GetFocus() != nil && key_struct.Key == glfw.KeyLeftShift {
 			// Do nothing
@@ -64,20 +64,20 @@ func (kh *KeyHandler_Struct) AddKeyEvent(key glfw.Key, mod glfw.ModifierKey){
 		} else if kh.GetFocus() != nil && key_struct.Key == glfw.KeyBackspace && cursor_pos != 0 {
 			kh.GetFocus().SetDisplayText(prev_text[:cursor_pos-1] + prev_text[cursor_pos:])
 			kh.GetFocus().SetCursorIndex(cursor_pos-1) 
-			kh.GetFocus().GeneratePolygons()
+			//kh.GetFocus().GeneratePolygons()
 		// Delete
 		} else if kh.GetFocus() != nil && key_struct.Key == glfw.KeyDelete && cursor_pos != len(prev_text) {
 			kh.GetFocus().SetDisplayText(prev_text[:cursor_pos] + prev_text[cursor_pos+1:]) 
-			kh.GetFocus().GeneratePolygons()
+			//kh.GetFocus().GeneratePolygons()
 		// Character!
 		} else if kh.GetFocus() != nil && cursor_pos != len(prev_text) && !kh.GetFocus().IsMaxLength() {
 			kh.GetFocus().SetDisplayText(prev_text[:cursor_pos] + kh.KeyQueueToString() + prev_text[cursor_pos:])
 			kh.GetFocus().SetCursorIndex(cursor_pos+1)
-			kh.GetFocus().GeneratePolygons()
+			//kh.GetFocus().GeneratePolygons()
 		} else if kh.GetFocus() != nil && cursor_pos == len(prev_text) && !kh.GetFocus().IsMaxLength() {
 			kh.GetFocus().SetDisplayText(prev_text + kh.KeyQueueToString())
 			kh.GetFocus().SetCursorIndex(cursor_pos+1)
-			kh.GetFocus().GeneratePolygons()
+			//kh.GetFocus().GeneratePolygons()
 		}
 	}
 	kh.FlushKeyQueue()
@@ -137,9 +137,9 @@ func (kh* KeyHandler_Struct) keyCallback(
 		fmt.Println("Key pressed")
 		kh.AddKeyEvent(key, mods)
 		if (key == glfw.KeyEscape) || (key == glfw.KeyEnter) {
-			var focus = kh.GetFocus()
+			//var focus = kh.GetFocus()
 			kh.SetFocus(nil)
-			focus.GeneratePolygons()
+			//focus.GeneratePolygons()
 			fmt.Println("Exit key pressed")
 		}
 	}

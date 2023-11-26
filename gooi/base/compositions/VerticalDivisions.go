@@ -17,11 +17,23 @@ type Vertical_Div_Struct struct {
 	Columns   			[]*Box_Struct
 
 	Offset_Pos_x 		[]float32
+
+	Sub_Width, Sub_Height *float32
 }
+func (b *Vertical_Div_Struct) SetSubWidth(w *float32){
+	b.Sub_Width = w
+}
+func (b *Vertical_Div_Struct) SetSubHeight(h *float32){
+	b.Sub_Height = h
+}
+
 
 func NewVerticalDivision(name string, widths []float32, posx, posy float32, width, height *float32) *Vertical_Div_Struct {
 	log.Println("new [Vertical_Div].")
 	var vert = Vertical_Div_Struct{}
+	var zero float32 = 0 
+	vert.SetSubWidth(&zero)
+	vert.SetSubHeight(&zero)
 	vert.VerticalName = name
 	vert.Master_Pos_x = posx
 	vert.Master_Pos_y = posy

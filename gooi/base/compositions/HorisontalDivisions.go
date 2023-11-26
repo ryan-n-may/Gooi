@@ -12,16 +12,27 @@ type Horisontal_Div_Struct struct {
 	Master_Pos_y 		float32
 	Master_Height 		*float32
 	Master_Width 		*float32
+
+	Sub_Width *float32
+	Sub_Height *float32
 	
 	RowHeights	 		[]float32
 	Rows    			[]*Box_Struct
 
 	Offset_Pos_y 		[]float32
 }
-
+func (hor *Horisontal_Div_Struct) SetSubWidth(w *float32){
+	hor.Sub_Width = w
+}
+func (hor *Horisontal_Div_Struct) SetSubHeight(h *float32){
+	hor.Sub_Height = h
+}
 func NewHorisontalDivision(name string, heights []float32, posx, posy float32, width, height *float32) *Horisontal_Div_Struct {
 	log.Println("new [Horisontal_Div].")
 	var hori = Horisontal_Div_Struct{}
+	var zero float32 = 0 
+	hori.SetSubWidth(&zero)
+	hori.SetSubHeight(&zero)
 	hori.HorisontalName = name
 	hori.Master_Pos_x = posx
 	hori.Master_Pos_y = posy
@@ -58,6 +69,9 @@ func (h *Horisontal_Div_Struct) MoveComponents() {
 
 
 func (h *Horisontal_Div_Struct) AddDrawable(drawable intf.Drawable_Interface, index int) {
+	var width = (*h.Sub_Width)*h.RowHeights[index]
+	drawable.SetSubHeight(h.Sub_Height)
+	drawable.SetSubWidth(&width)
 	h.Rows[index].AddDrawable(drawable)
 }
 func (h *Horisontal_Div_Struct) Draw(){
@@ -82,6 +96,19 @@ func (h *Horisontal_Div_Struct) GetPos() (float32, float32){
 }
 func (h *Horisontal_Div_Struct) GetBounds() (float32, float32){
 	return (*h.Master_Width), (*h.Master_Height)
+}
+
+func (h *Horisontal_Div_Struct) SetWidth(w *float32) {
+	h.Master_Width = w
+}
+func (h *Horisontal_Div_Struct) SetHeight(s *float32) {
+	h.Master_Height = s
+}
+func (h *Horisontal_Div_Struct) GetWidth() *float32 {
+	return h.Master_Width
+}
+func (h *Horisontal_Div_Struct) GetHeight() *float32 {
+	return h.Master_Height
 }
 
 func (h *Horisontal_Div_Struct) SetPosZ(z float32) {

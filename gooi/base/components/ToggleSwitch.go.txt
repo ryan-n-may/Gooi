@@ -6,6 +6,7 @@ package components
 import (
 	glfw 	"github.com/go-gl/glfw/v3.2/glfw"
 	gl 		"github.com/go-gl/gl/v4.1-core/gl"
+	mgl32   "github.com/go-gl/mathgl/mgl32"
 	intf 	"gooi/interfaces"
 	event 	"gooi/base/event"
 	cons 	"gooi/base/constants"
@@ -47,14 +48,27 @@ type ToggleSwitch_Struct struct {
 	ToggleBorderColour   		[3]float32
 	ToggleBackgroundColour   	[3]float32
 
+	Toggle_Text 	*Text_Struct
+	Toggle_Font 	*Font_Struct
+
 	TogglePosition 				float32
 	ToggleState 				bool
+
+	Sub_Width, Sub_Height *float32
+}
+
+func (c *ToggleSwitch_Struct) SetSubWidth(w *float32){
+	c.Sub_Width = w
+}
+func (c *ToggleSwitch_Struct) SetSubHeight(h *float32){
+	c.Sub_Height = h
 }
 
 func CreateThemedToggle(
 	name string,
 	canvas *Canvas_Struct, 
 	width, height, pos_x, pos_y float32, 
+	font_size int, 
 	toggle_event *event.Event_Struct,
 	theme *colours.Theme,
 	) *ToggleSwitch_Struct {
@@ -81,6 +95,11 @@ func CreateThemedToggle(
 		// Themed
 		t.Padding = theme.ToggleBorderPadding
 		t.AnimationTime = theme.ToggleAnimationTime
+
+		t.Toggle_Font = ReadFontFile(theme.FontName, theme.FontPath, font_size)
+		t.Toggle_Font.Font.ResizeWindow(*t.WindowWidth, *t.WindowHeight)
+		t.Toggle_Text = CreateText(t.ToggleSwitchName, t.Toggle_Font.Font)
+		t.Toggle_Text.Text.SetPosition(mgl32.Vec3{pos_x + t.Toggle_Text.Text.Width() + t.Height, pos_y + t.Height/2, 0.0})
 		
 		t.ToggleColour 				= theme.ToggleCircleColour
 		t.ToggleColour_True 		= theme.ToggleBackgroundColour_On
@@ -188,6 +207,7 @@ func (t *ToggleSwitch_Struct) Draw() {
 		gl.BindVertexArray(v.VAO)
 		gl.DrawArrays(v.DrawMode, 0, int32(len(t.GetXYZ())/3))
 	}
+	Draw(t.Toggle_Text)
 }
 
 func (t *ToggleSwitch_Struct) Redraw() {
@@ -197,6 +217,7 @@ func (t *ToggleSwitch_Struct) Redraw() {
 		gl.BindVertexArray(v.VAO)
 		gl.DrawArrays(v.DrawMode, 0, int32(len(t.GetXYZ())/3))
 	}
+	Draw(t.Toggle_Text)
 }
 
 
@@ -257,6 +278,7 @@ func (t *ToggleSwitch_Struct) SetPos(x, y float32) {
 	t.Pos_x = x + t.Height/2
 	t.Pos_y = y 
 	t.GeneratePolygons()
+	t.Toggle_Text.Text.SetPosition(mgl32.Vec3{t.Pos_x + t.Toggle_Text.Text.Width() + t.Height, t.Pos_y + t.Height/2, t.Pos_z*2})
 	t.SetClickableBounds(t.Pos_x - t.Height/2, t.Pos_x + t.Width + t.Height/2, t.Pos_y, t.Pos_y + t.Height)
 }
 func (t *ToggleSwitch_Struct) GetPos() (float32, float32) { return t.Pos_x, t.Pos_y }
@@ -285,6 +307,7 @@ func (t *ToggleSwitch_Struct) GetClickableBounds() (int, int, int, int, int) {
 	return t.Bounds_X_min, t.Bounds_X_max, t.Bounds_Y_min, t.Bounds_Y_max, int(t.Pos_z)
 }
 func (t *ToggleSwitch_Struct) SetPosZ(z float32){
+	t.Toggle_Text.Text.SetPosition(mgl32.Vec3{t.Pos_x, t.Pos_y, z*2})
 	t.Pos_z = z
 }
 func (t *ToggleSwitch_Struct) GetPosZ() float32 {

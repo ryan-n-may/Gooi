@@ -17,6 +17,14 @@ type Label_Struct struct {
 	LabelCanvas 	*Canvas_Struct
 	Label_Text 		*Text_Struct
 	Label_Font 		*Font_Struct
+	
+	Sub_Width, Sub_Height *float32
+}
+func (c *Label_Struct) SetSubWidth(w *float32){
+	c.Sub_Width = w
+}
+func (c *Label_Struct) SetSubHeight(h *float32){
+	c.Sub_Height = h
 }
 func CreateLabel(
 	name string,
@@ -30,7 +38,7 @@ func CreateLabel(
 	var l = Label_Struct{}
 		l.Pos_x = pos_x
 		l.Pos_y = pos_y
-		l.Pos_z = 1.0
+		l.Pos_z = 0.0
 		l.LabelCanvas = canvas
 		l.LabelText = name
 		// Window characteristics
@@ -54,7 +62,7 @@ func CreateThemedLabel(
 		var l = Label_Struct{}
 		l.Pos_x = pos_x
 		l.Pos_y = pos_y
-		l.Pos_z = 1.0
+		l.Pos_z = 0.0
 		l.LabelCanvas = canvas
 		l.LabelText = name
 		// Window characteristics

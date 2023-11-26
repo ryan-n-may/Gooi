@@ -111,6 +111,15 @@ type Text_Input_Struct struct {
 	KeyListener 	*list.KeyHandler_Struct
 	Highlight 		*HighLight_Struct
 	Cursor 			*Cursor_Struct
+	
+	Sub_Width, Sub_Height *float32
+}
+
+func (c *Text_Input_Struct) SetSubWidth(w *float32){
+	c.Sub_Width = w
+}
+func (c *Text_Input_Struct) SetSubHeight(h *float32){
+	c.Sub_Height = h
 }
 func CreateTextInput(
 	name string,

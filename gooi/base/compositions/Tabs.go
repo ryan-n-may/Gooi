@@ -19,6 +19,9 @@ type Tabs_Struct struct {
 	Master_Height 		*float32
 	Master_Width 		*float32
 
+	Sub_Width *float32
+	Sub_Height *float32
+
 	Labels 				[]string
 	
 	TabButtonRow 		*Row_Struct
@@ -30,16 +33,25 @@ type Tabs_Struct struct {
 
 	MouseHandler 		intf.MouseHandler_Interface
 }
-
+func (tabs *Tabs_Struct) SetSubWidth(w *float32){
+	tabs.Sub_Width = w
+}
+func (tabs *Tabs_Struct) SetSubHeight(h *float32){
+	tabs.Sub_Height = h
+}
 func NewTabs(name string, canvas *comp.Canvas_Struct, eventhandler intf.EventHandler_Interface, mousehandler intf.MouseHandler_Interface, labels []string, posx, posy float32, width, height *float32) *Tabs_Struct {
 	log.Println("new [Tabs].")
 	var tabs = Tabs_Struct{}
+	var zero float32 = 0 
+	tabs.SetSubWidth(&zero)
+	tabs.SetSubHeight(&zero)
 	tabs.TabsName = name
 	tabs.TabCanvas = canvas
 	tabs.Master_Pos_x = posx
 	tabs.Master_Pos_y = posy
 	tabs.Master_Height = height
 	tabs.Master_Width = width
+
 	tabs.MouseHandler = mousehandler
 	tabs.Labels = labels
 
@@ -71,11 +83,10 @@ func NewTabs(name string, canvas *comp.Canvas_Struct, eventhandler intf.EventHan
 		// registering the event to the event handler
 		eventhandler.RegisterEventToHandler(move_to_front_event)
 
-		// THIS BUTTON IS A PLACEHOLDER
 		tabs.Buttons[i] = comp.CreateButton(
 			tabs.Labels[i],
 			tabs.TabCanvas, 
-			100, 30, 300, 50, 
+			150, 30, 300, 50, 
 			10,
 			2, 2,
 			250,
@@ -105,10 +116,14 @@ func (tabs *Tabs_Struct) MoveToFront(param intf.Paramaters_Interface) {
 }
 
 func (tabs *Tabs_Struct) MoveComponents() {
-	
+	tabs.TabContainer.SetPos(tabs.Master_Pos_x, tabs.Master_Pos_y)
 }
 
 func (tabs *Tabs_Struct) AddDrawable(drawable intf.Drawable_Interface, index int) {
+	var width, height = drawable.GetBounds()
+	drawable.SetSubHeight(&height)
+	drawable.SetSubWidth(&width)
+
 	tabs.Tabs[index].AddDrawable(drawable)
 	tabs.TabButtonRow.AddDrawable(tabs.Buttons[index])
 	tabs.MouseHandler.RegisterClickableToHandler(tabs.Buttons[index])
@@ -122,6 +137,7 @@ func (tabs *Tabs_Struct) Draw(){
 }
 
 func (tabs *Tabs_Struct) Redraw(){
+	tabs.MoveComponents()
 	tabs.TabContainer.Redraw()
 }
 

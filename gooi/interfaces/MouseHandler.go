@@ -5,10 +5,10 @@ import (
 )
 
 type MouseHandler_Interface interface {
-	RegisterClickableToHandler(Clickable_Interface)
-	CheckClick(int, int, int, glfw.ModifierKey) 
-	GetClickData(*glfw.Window) (float64, float64, int)
-	GetClickables() []Clickable_Interface
+	RegisterClickableToHandler(Clickable)
+	CheckClick(float32, float32, int, glfw.ModifierKey) 
+	GetClickData(*glfw.Window) (float32, float32, int)
+	GetClickables() []Clickable
 	SetName(string)
 	GetName() string
 }

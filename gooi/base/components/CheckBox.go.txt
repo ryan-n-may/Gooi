@@ -45,6 +45,14 @@ type CheckBox_Struct struct {
 	CheckBox_Text 	*Text_Struct
 	CheckBox_Font 	*Font_Struct
 	FilledState bool
+
+	Sub_Width, Sub_Height *float32
+}
+func (c *CheckBox_Struct) SetSubWidth(w *float32){
+	c.Sub_Width = w
+}
+func (c *CheckBox_Struct) SetSubHeight(h *float32){
+	c.Sub_Height = h
 }
 func CreateCheckbox(
 	name 					string,
