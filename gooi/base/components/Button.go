@@ -169,8 +169,8 @@ func (b *Button) GetClickable() *foundation.Clickable {
 }
 
 func (b *Button) Click(alive *bool, pressAction int, pos_x, pos_y float32, mod_key glfw.ModifierKey){
-	b.clickable.TriggerClickEvent(alive, pressAction, pos_x, pos_y, mod_key)
 	if pressAction == b.clickable.GetClickTrigger() {
+		b.clickable.TriggerClickEvent(alive, pressAction, pos_x, pos_y, mod_key)
 		b.animation.RunAnimation(alive)
 	}
 }

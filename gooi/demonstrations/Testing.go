@@ -5,6 +5,7 @@ import (
 	event 		"gooi/base/event"
 	comp 		"gooi/base/components"
 	listeners 	"gooi/base/listeners"
+	cons 		"gooi/base/constants"
 	windows 	"gooi/base/windows"
 	intf 		"gooi/interfaces"
 	colours     "gooi/base/colours"
@@ -42,16 +43,51 @@ func main() {
 		100, 50, 20, 
 		0, 0, 0,
 		"luxi", 
-		"Base/Components/Fonts/luxi.ttf",
+		"base/components/fonts/luxi.ttf",
 		16,
 		test_event,
 		200,
 	)
 
+	var checkbox = comp.CreateCheckbox(
+		A.WindowCanvas, 
+		A.WindowCanvas,
+		"Checkbox Testing",
+		15, 200, 200, 0.0,
+		&event.NULL_EVENT, 
+		"luxi",
+		"base/components/fonts/luxi.ttf",
+		16, 
+	)
+
+	var label = comp.CreateLabel(
+		A.WindowCanvas,
+		A.WindowCanvas,
+		"label",
+		100, 300, 0, 
+		"luxi", 
+		"base/components/fonts/luxi.ttf",
+		16,
+	)
+
+	var rectangle = comp.CreateRectangle(
+		A.WindowCanvas, 
+		checkbox, 
+		"label rectangle",
+		0, 0, 
+		0, 0, 0, 
+		colours.GRAY,
+		cons.FILL_MASTER_DIMENSIONS,
+	)
+
 	A.GetWindowCanvas().AddComponent(Button)
+	A.GetWindowCanvas().AddComponent(rectangle)
+	A.GetWindowCanvas().AddComponent(checkbox)
+	A.GetWindowCanvas().AddComponent(label)
 
 /** Telling the mouse handler that the button components are clickable **/
 	A.GetMouseHandler().RegisterClickableToHandler(Button)
+	A.GetMouseHandler().RegisterClickableToHandler(checkbox)
 
 	A.RunWindow()
 }
