@@ -64,6 +64,7 @@ func CreateRectangle(
 // Generates the VAO array of the polygons used to draw the button. 
 // Stores the VAO in intf.Drawing_Struct alongisde the drawing mode (gl.TRIANGLE or gl.TRIANGLE_FAN)
 func (r *Rectangle_Struct) GeneratePolygons(){
+	r.drawable.ClearPolygons()
 	r.drawable.CreateRectangle(r.colour, r.slaveWidth, r.slaveHeight, r.posX, r.posY, r.posZ)
 }
 // Draw()

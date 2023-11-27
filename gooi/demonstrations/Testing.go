@@ -53,7 +53,7 @@ func main() {
 		A.WindowCanvas, 
 		A.WindowCanvas,
 		"Checkbox Testing",
-		15, 200, 200, 0.0,
+		10, 200, 200, 0.0,
 		&event.NULL_EVENT, 
 		"luxi",
 		"base/components/fonts/luxi.ttf",
@@ -70,9 +70,21 @@ func main() {
 		16,
 	)
 
+	var toggle = comp.CreateToggle(
+		A.WindowCanvas, 
+		A.WindowCanvas, 
+		"toggle", 
+		30, 30, 
+		300, 300, 0.0, 
+		"luxi", 
+		"base/components/fonts/luxi.ttf",
+		16,
+		&event.NULL_EVENT,
+	)
+	
 	var rectangle = comp.CreateRectangle(
 		A.WindowCanvas, 
-		checkbox, 
+		toggle, 
 		"label rectangle",
 		0, 0, 
 		0, 0, 0, 
@@ -81,13 +93,15 @@ func main() {
 	)
 
 	A.GetWindowCanvas().AddComponent(Button)
-	A.GetWindowCanvas().AddComponent(rectangle)
 	A.GetWindowCanvas().AddComponent(checkbox)
 	A.GetWindowCanvas().AddComponent(label)
+	A.GetWindowCanvas().AddComponent(rectangle)
+	A.GetWindowCanvas().AddComponent(toggle)
 
 /** Telling the mouse handler that the button components are clickable **/
 	A.GetMouseHandler().RegisterClickableToHandler(Button)
 	A.GetMouseHandler().RegisterClickableToHandler(checkbox)
+	A.GetMouseHandler().RegisterClickableToHandler(toggle)
 
 	A.RunWindow()
 }

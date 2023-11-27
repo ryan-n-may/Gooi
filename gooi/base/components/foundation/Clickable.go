@@ -26,6 +26,9 @@ type Clickable struct {
 	boundsY Coordinate
 
 	clickable bool
+
+	buffer *beep.Buffer
+	format *beep.Format
 }
 
 var (
@@ -40,8 +43,21 @@ func NewClickable(canvas intf.Canvas_Interface, clickEvent *event.Event_Struct, 
 		Coordinate{boundsX_min, boundsX_max},
 		Coordinate{boundsY_min, boundsY_max},
 		true,
+		nil, 
+		nil,
 	}
 	clickable.canvas.GetEventHandler().RegisterEventToHandler(clickEvent)
+
+	f, _ := os.Open("base/mouseclick.mp3")
+	var streamer, format, _ = mp3.Decode(f)
+	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10)) // click sound currently isnt working :(((())))
+	var buffer = beep.NewBuffer(format)
+	buffer.Append(streamer)
+	streamer.Close()
+
+
+	clickable.buffer = buffer
+	clickable.format = &format
 
 	return &clickable
 }
@@ -49,12 +65,9 @@ func NewClickable(canvas intf.Canvas_Interface, clickEvent *event.Event_Struct, 
 func (clickable *Clickable) TriggerClickEvent(alive *bool, pressAction int, pos_x, pos_y float32, mod_key glfw.ModifierKey) {
 	// click events can only be added once the last event has finished being added to the event queue.
 	// similar to animations but less consequential.
-	f, _ := os.Open("base/mouseclick.mp3")
-	var streamer, format, _ = mp3.Decode(f)
-	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10)) // click sound currently isnt working :(((())))
 	
 	audio_wg.Add(1)
-	go clickable.PlaySound(&audio_wg, streamer)
+	go clickable.PlaySound(&audio_wg, *clickable.buffer)
 
 	var kill = func(alive *bool) {
 		*alive = false
@@ -69,13 +82,12 @@ func (clickable *Clickable) TriggerClickEvent(alive *bool, pressAction int, pos_
 	}
 
 	audio_wg.Wait()
-	fmt.Println("Function done")
-	streamer.Close()
 	return
 }
 
-func (clickable *Clickable) PlaySound(wg *sync.WaitGroup, streamer beep.StreamSeekCloser){
-	speaker.Play(streamer)
+func (clickable *Clickable) PlaySound(wg *sync.WaitGroup, buffer beep.Buffer){
+	sound := buffer.Streamer(0, buffer.Len())
+	speaker.Play(sound)
 	fmt.Println("Playing the sound")
 	defer wg.Done()
 	return

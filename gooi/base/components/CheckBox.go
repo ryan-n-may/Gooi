@@ -95,7 +95,6 @@ func CreateCheckbox(
 	b.animation = foundations.NewAnimation(b.animationFunctions, 0)
 
 	b.SetPos(pos_x, pos_y, pos_z)
-	b.writing.SetPosition(b.posX + b.writing.GetWidth()/2 + b.radius*2, b.posY + b.writing.GetHeight()/2 , b.posZ)
 
 	if b.writing.GetHeight() > radius*2 {
 		b.slaveHeight = b.writing.GetHeight() 
@@ -103,6 +102,8 @@ func CreateCheckbox(
 		b.slaveHeight = radius*2
 	}
 	b.slaveWidth = b.writing.GetWidth() + radius*3
+
+	b.writing.SetPosition(b.posX + b.writing.GetWidth()/2 + b.radius*2, b.posY + b.slaveHeight/2 , b.posZ)
 
 	b.GeneratePolygons()
    	return &b
