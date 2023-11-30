@@ -8,6 +8,7 @@ import (
 	runtime "runtime"
 	colours "gooi/base/colours"
 	log 	"log"
+	time 	"time"
 )
 var (
 	resizing bool
@@ -162,6 +163,19 @@ func (A* ApplicationWindow_Struct) mouseButtonCallback(
 }
 
 func (A* ApplicationWindow_Struct) resizeCallback(window *glfw.Window, width int, height int){
+	if !resizing {
+		resizing = true
+		go A.resizeTimeout()
+	}
+}
+
+func (A* ApplicationWindow_Struct) resizeTimeout(){
+	time.Sleep(250 * time.Millisecond)
+	resizing = false
+	A.resize()
+}
+
+func (A* ApplicationWindow_Struct) resize() {
 	var window_w, window_h = A.Window.GetSize()
 	*A.Width = float32(window_w)
 	*A.Height = float32(window_h)

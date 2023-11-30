@@ -85,3 +85,6 @@ func (l *Label_Struct) GetDisplayText() string { return l.name }
 
 func (l *Label_Struct) GetHeight() float32 { return l.slaveHeight }
 func (l *Label_Struct) GetWidth() float32 { return l.slaveWidth }
+
+func (l *Label_Struct) GetMasterStruct() intf.Displayable { return l.masterStruct }
+func (l *Label_Struct) SetMasterStruct(master intf.Displayable) { l.masterStruct = master }

@@ -13,5 +13,7 @@ type Editable_Interface interface {
 
 	IsMaxLength() bool
 
+	GeneratePolygons()
+
 }
 

@@ -27,6 +27,8 @@ type Canvas_Struct struct {
 	Components []intf.Displayable
 	Canvas_Font *font.Font_Struct
 	BackgroundColour [3]float32
+
+	masterStruct intf.Displayable
 }
 /**
  * Creats new Canvas_Struct 
@@ -48,11 +50,14 @@ func NewCanvas(window intf.Window_Interface) *Canvas_Struct {
 	gl.ClearColor(c.BackgroundColour[0], c.BackgroundColour[1], c.BackgroundColour[2], 1.0)
 	// Create empty array of drawables
 	c.Components = make([]intf.Displayable, 0)	
+	c.masterStruct = &c
 	return &c
 }
 // AddComponent(drawable)
 // Adds a component to the components array.
-func (c *Canvas_Struct) AddComponent(a intf.Displayable) { c.Components = append(c.Components, a) }
+func (c *Canvas_Struct) AddDisplayable(a intf.Displayable) { c.Components = append(c.Components, a) }
+func (c *Canvas_Struct) GetDisplayables() []intf.Displayable { return c.Components }
+func (c *Canvas_Struct) SetDisplayables(a []intf.Displayable) { c.Components = a }
 // Count all drawables in canvas
 func (c *Canvas_Struct) CountComponents() int { return len(c.Components) }
 func (c *Canvas_Struct) RefreshCanvas() {
@@ -104,7 +109,6 @@ func (c *Canvas_Struct) GetEventHandler() intf.EventHandler_Interface{ return c.
 func (c *Canvas_Struct) SetEventHandler(l intf.EventHandler_Interface){ c.EventHandler = l }
 func (c *Canvas_Struct) SetWindow(w intf.Window_Interface){ c.CanvasWindow = w }
 func (c *Canvas_Struct) GetWindow() intf.Window_Interface { return c.CanvasWindow }
-func (c *Canvas_Struct) SetComponents(a []intf.Displayable) { c.Components = a }
 
 func (c *Canvas_Struct) GetWidth() float32 { return *c.CanvasWindow.GetWindowWidth() }
 func (c *Canvas_Struct) GetHeight() float32 { return *c.CanvasWindow.GetWindowHeight() }
@@ -115,3 +119,5 @@ func (c *Canvas_Struct) GetPos() (float32, float32, float32) {
 	return 0, 0, 0
 }
 
+func (c *Canvas_Struct) GetMasterStruct() intf.Displayable { return c }
+func (c *Canvas_Struct) SetMasterStruct(master intf.Displayable) { c.masterStruct = master }

@@ -34,6 +34,9 @@ type Displayable interface {
 	GetWidth() float32
 	GetHeight() float32
 
+	GetMasterStruct() Displayable
+	SetMasterStruct(Displayable)
+
 	Draw()
 	Redraw()
 }

@@ -14,8 +14,9 @@ type Canvas_Interface interface {
 
 	GetPrograms() uint32
 
-	AddComponent(Displayable)
-	SetComponents([]Displayable)
+	AddDisplayable(Displayable)
+	GetDisplayables() []Displayable
+	SetDisplayables([]Displayable)
 
 	SetBackgroundColour([3]float32)
 

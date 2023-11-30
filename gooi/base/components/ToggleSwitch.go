@@ -252,3 +252,6 @@ func (t *ToggleSwitch_Struct) GetClickableBounds() (float32, float32, float32, f
 
 func (t *ToggleSwitch_Struct) GetWidth() float32 { return t.slaveWidth }
 func (t *ToggleSwitch_Struct) GetHeight() float32 { return t.slaveHeight }
+
+func (t *ToggleSwitch_Struct) GetMasterStruct() intf.Displayable { return t.masterStruct }
+func (t *ToggleSwitch_Struct) SetMasterStruct(master intf.Displayable) { t.masterStruct = master }

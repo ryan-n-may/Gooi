@@ -9,7 +9,7 @@ import (
 	windows 	"gooi/base/windows"
 	intf 		"gooi/interfaces"
 	colours     "gooi/base/colours"
-
+	ompo 		"gooi/base/compositions"
 )
 
 
@@ -24,6 +24,8 @@ func main() {
 /** Creating event listener/handler and assigning it to the window **/
 	var E = event.NewEventHandler()
 	A.GetWindowCanvas().SetEventHandler(E)
+/** Key Listener **/
+	var KeyListener = listeners.CreateKeyListener("KeyListener", A.GetWindowCanvas())
 /** Creating button 1 **/
 	// creating event arguments for button method
 	var event_arguments = event.NewEventParameter([]string{"Hello World", " and Jupiter!"})
@@ -36,7 +38,7 @@ func main() {
 	// registering the event to the event handler
 	E.RegisterEventToHandler(test_event)
 	// creating the button and assinging it the visual characteristics + the trigger event
-	var Button = comp.CreateButton(
+	var button = comp.CreateButton(
 		A.WindowCanvas, 
 		A.WindowCanvas, 
 		"Button1",
@@ -81,27 +83,57 @@ func main() {
 		16,
 		&event.NULL_EVENT,
 	)
-	
-	var rectangle = comp.CreateRectangle(
+
+
+	var input = comp.NewTextInput(
+		A.WindowCanvas,
+		A.WindowCanvas,
+		"Input",
+		"Placeholder",
+		KeyListener,
+		100, 25,
+		400, 400, 0.0,
+		10,
+		colours.LIGHT_GRAY,
+		"luxi",
+		"base/components/fonts/luxi.ttf",
+		16,
+	)
+
+	var rectangle = comp.NewRectangle(
 		A.WindowCanvas, 
-		toggle, 
+		label, 
 		"label rectangle",
-		0, 0, 
+		500, 20, 
 		0, 0, 0, 
+		10,
 		colours.GRAY,
 		cons.FILL_MASTER_DIMENSIONS,
 	)
 
-	A.GetWindowCanvas().AddComponent(Button)
-	A.GetWindowCanvas().AddComponent(checkbox)
+	var box = ompo.NewBoxComposition(
+		"Box", 
+		A.WindowCanvas, A.WindowCanvas,
+		0, 0, 0,
+		A.GetWindowCanvas().GetWidth(), 
+		A.GetWindowCanvas().GetHeight(),
+		cons.ALIGN_TOP_CENTRE,		
+	)
+
+	box.AddDisplayable(button)
+
 	A.GetWindowCanvas().AddComponent(label)
+	A.GetWindowCanvas().AddComponent(checkbox)
+	A.GetWindowCanvas().AddComponent(box)
 	A.GetWindowCanvas().AddComponent(rectangle)
 	A.GetWindowCanvas().AddComponent(toggle)
+	A.GetWindowCanvas().AddComponent(input)
 
 /** Telling the mouse handler that the button components are clickable **/
-	A.GetMouseHandler().RegisterClickableToHandler(Button)
+	A.GetMouseHandler().RegisterClickableToHandler(button)
 	A.GetMouseHandler().RegisterClickableToHandler(checkbox)
 	A.GetMouseHandler().RegisterClickableToHandler(toggle)
+	A.GetMouseHandler().RegisterClickableToHandler(input)
 
 	A.RunWindow()
 }

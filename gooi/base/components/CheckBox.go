@@ -181,3 +181,6 @@ func (b *CheckBox_Struct) GetClickableBounds() (float32, float32, float32, float
 
 func (b *CheckBox_Struct) GetHeight() float32 { return b.slaveHeight }
 func (b *CheckBox_Struct) GetWidth() float32 { return b.slaveWidth }
+
+func (b *CheckBox_Struct) GetMasterStruct() intf.Displayable { return b.masterStruct }
+func (b *CheckBox_Struct) SetMasterStruct(master intf.Displayable) { b.masterStruct = master }

@@ -87,7 +87,7 @@ func (b *Button) animationf1() {
 	b.GeneratePolygons()
 	b.GetCanvas().RefreshCanvas()	
 }
-func (b *Button) animationf2() {// DUMMY 
+func (b *Button) animationf2() {
 	fmt.Println("Animation2")
 	b.buttonBodyColour = colours.LIGHT_GRAY
 	b.GeneratePolygons()
@@ -101,12 +101,11 @@ func (b *Button) GeneratePolygons(){
 	b.drawable.ClearPolygons()
 	var border float32 = 2
 	/** Border **/
-		b.drawable.CreateRoundedRectangle(colours.DARK_BLUE, b.slaveWidth, b.slaveHeight, b.posX, b.posY, b.posZ, b.radius)
+	b.drawable.CreateRoundedRectangle(colours.DARK_BLUE, b.slaveWidth, b.slaveHeight, b.posX, b.posY, b.posZ, b.radius)
 	/** Background Rectangles **/
-		// unsure if these adjustments to radius and position are correct, will debug once displayed.
-		b.drawable.CreateRoundedRectangle(colours.WHITE, b.slaveWidth-border/2, b.slaveHeight-border/2, b.posX+border/2, b.posY+border/2, b.posZ, b.radius-border/2)
+	b.drawable.CreateRoundedRectangle(colours.WHITE, b.slaveWidth-border/2, b.slaveHeight-border/2, b.posX+border/2, b.posY+border/2, b.posZ, b.radius-border/2)
 	/** Button Body **/
-		b.drawable.CreateRoundedRectangle(b.buttonBodyColour, b.slaveWidth-border, b.slaveHeight-border, b.posX+border, b.posY+border, b.posZ, b.radius-border)
+	b.drawable.CreateRoundedRectangle(b.buttonBodyColour, b.slaveWidth-border, b.slaveHeight-border, b.posX+border, b.posY+border, b.posZ, b.radius-border)
 }
 // Draw()
 // This method draws the VAO array to gl using the canvas program.
@@ -127,14 +126,12 @@ func (b *Button) SetPos(x, y, z float32) {
 	b.posX = x
 	b.posY = y
 	b.posZ = z
-	// refresh drawables in foundation
-	b.GeneratePolygons()
 	// relocate writing
 	b.writing.SetPosition(x + b.GetWidth()/2, y + b.GetHeight()/2, b.posZ)
 	// relocate clickable bounds
 	b.clickable.SetClickBounds(x, x + b.slaveWidth, y, y + b.slaveHeight)
-	// refresh canvas (clear and redraw everything)
-	b.GetCanvas().RefreshCanvas()	
+	// refresh drawables in foundation
+	b.Redraw()
 }
 func (b *Button) GetPos() (float32, float32, float32) { return b.posX, b.posY, b.posZ }
 
@@ -174,3 +171,6 @@ func (b *Button) Click(alive *bool, pressAction int, pos_x, pos_y float32, mod_k
 		b.animation.RunAnimation(alive)
 	}
 }
+
+func (b *Button) GetMasterStruct() intf.Displayable { return b.masterStruct }
+func (b *Button) SetMasterStruct(master intf.Displayable) { b.masterStruct = master }

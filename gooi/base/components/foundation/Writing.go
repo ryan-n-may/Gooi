@@ -3,8 +3,10 @@ package foundation
 import (
 	mgl32   "github.com/go-gl/mathgl/mgl32"
 
-	intf "gooi/interfaces"
-	font "gooi/base/font"
+	intf 	"gooi/interfaces"
+	font 	"gooi/base/font"
+
+	fmt 	"fmt"
 )
 
 type Writing struct {
@@ -93,9 +95,14 @@ func (writing *Writing) GetLabel() string {
 }
 
 func (writing *Writing) GetWidth() float32 {
+	fmt.Printf("Width is %v\n", writing.slaveWidth)
 	return writing.slaveWidth
 }
 
 func (writing *Writing) GetHeight() float32 {
 	return writing.slaveHeight
+}
+
+func (writing *Writing) GetText() *font.Text_Struct {
+	return writing.text
 }

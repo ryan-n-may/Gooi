@@ -1,21 +1,21 @@
 package main
 
 import (
-	event 		"GUI/Base/Event"
-	comp 		"GUI/Base/Components"
-	listeners 	"GUI/Base/Listeners"
-	windows 	"GUI/Base/Windows"
-	ompo   		"GUI/Base/Compositions"
-	cons        "GUI/Base/Constants"
-	colours     "GUI/Base/Colours"
+	event 		"gooi/base/event"
+	comp 		"gooi/base/components"
+	listeners 	"gooi/base/listeners"
+	windows 	"gooi/base/windows"
+	ompo   		"gooi/base/compositions"
+	cons        "gooi/base/constants"
+	colours     "gooi/base/colours"
 )
 
 
 func main() {
 /** Creating Window **/
-	var A = windows.NewWindow("Box Alignment Demo", 1000, 800)
+	var A = windows.NewWindow("Box Alignment Demo", 800, 400)
 	A.OpenWindow()
-	A.SetBackgroundColour(colours.LIGHT_GRAY)
+	A.SetBackgroundColour(colours.BLUE)
 /** Creating mouse listener and assinging it to the window **/
 	var ML = listeners.CreateMouseHandler("Mouse Handler")
 	A.SetMouseHandler(ML)
@@ -23,249 +23,89 @@ func main() {
 	var E = event.NewEventHandler()
 	A.GetWindowCanvas().SetEventHandler(E)
 /** Creating button 1 **/
-	var window_w = A.GetWindowWidth()
-	var window_h = A.GetWindowHeight()
+	var window_w float32 = 1.0
+	var window_h float32 = 1.0
 
+	// Here we create multiple stacked compositions. Each box composition has a differing align constant.
+	var centreComposition = ompo.NewBoxComposition("Centre", A.WindowCanvas, A.WindowCanvas, 0, 0, 0, window_w, window_h, cons.ALIGN_CENTRE)
+	var topLeftComposition = ompo.NewBoxComposition("Top Left", A.WindowCanvas, A.WindowCanvas, 0, 0, 0, window_w, window_h, cons.ALIGN_TOP_LEFT)
+	var topRightComposition = ompo.NewBoxComposition("Top Right", A.WindowCanvas, A.WindowCanvas, 0, 0, 0, window_w, window_h, cons.ALIGN_TOP_RIGHT)
+	var topCentreComposition = ompo.NewBoxComposition("Top Centre", A.WindowCanvas, A.WindowCanvas, 0, 0, 0, window_w, window_h, cons.ALIGN_TOP_CENTRE)
+	var leftComposition = ompo.NewBoxComposition("Left", A.WindowCanvas, A.WindowCanvas, 0, 0, 0, window_w, window_h, cons.ALIGN_CENTRE_LEFT)
+	var rightComposition = ompo.NewBoxComposition("Right", A.WindowCanvas, A.WindowCanvas, 0, 0, 0, window_w, window_h, cons.ALIGN_CENTRE_RIGHT)
+	var bottomLeftComposition = ompo.NewBoxComposition("Bottom Left", A.WindowCanvas, A.WindowCanvas, 0, 0, 0, window_w, window_h, cons.ALIGN_BOTTOM_LEFT)
+	var bottomRightComposition = ompo.NewBoxComposition("Bottom Right", A.WindowCanvas, A.WindowCanvas, 0, 0, 0, window_w, window_h, cons.ALIGN_BOTTOM_RIGHT)
+	var bottomCentreComposition = ompo.NewBoxComposition("Bottom Centre", A.WindowCanvas, A.WindowCanvas, 0, 0, 0, window_w, window_h, cons.ALIGN_BOTTOM_CENTRE)
 
-	
-	// creating the button and assinging it the visual characteristics + the trigger event
-	var Button_Centre = comp.CreateButton(
-		"ALIGN_CENTRE",
-		A.WindowCanvas, 
-		200, 50, 300, 50, 
-		20,
-		2,
-		2,
-		250,
-		&event.NULL_EVENT,
-		"Base/Components/Fonts/luxi.ttf",
-		"luxi", 
-		16,
-		colours.BLUE,
-		colours.DARK_BLUE,
-		colours.GRAY,
-		colours.GRAY,
-		colours.WHITE,
+	// Now we create the buttons to assign to each composition.. We assign them via addition of the displayable to the composition, 
+	// as well as the assignment of the composition as the masterStruct of the button...
+	var centreButton = comp.CreateButton( A.WindowCanvas, centreComposition, "Centre",
+		100, 50, 20, 0, 0, 0,
+		"luxi", "base/components/fonts/luxi.ttf", 16,
+		&event.NULL_EVENT, 200,
 	)
-	var Centre_Composition = ompo.NewBoxComposition("Top Left Composition", 
-						0, 0, 
-						window_w, 
-						window_h, 
-						cons.ALIGN_CENTRE)
-	Centre_Composition.AddDrawable(Button_Centre)
-
-	var Button_Top_Left = comp.CreateButton(
-		"ALIGN_TOP_LEFT",
-		A.WindowCanvas, 
-		200, 50, 300, 50, 
-		20,
-		2,
-		2,
-		250,
-		&event.NULL_EVENT,
-		"Base/Components/Fonts/luxi.ttf",
-		"luxi", 
-		16,
-		colours.BLUE,
-		colours.DARK_BLUE,
-		colours.GRAY,
-		colours.GRAY,
-		colours.WHITE,
+	centreComposition.AddDisplayable(centreButton)
+	var topLeftButton = comp.CreateButton( A.WindowCanvas, topLeftComposition, "Top Left",
+		100, 50, 20, 0, 0, 0,
+		"luxi", "base/components/fonts/luxi.ttf", 16,
+		&event.NULL_EVENT, 200,
 	)
-	var Top_Left_Composition = ompo.NewBoxComposition("Top Left Composition", 
-						0, 0, 
-						window_w, 
-						window_h, 
-						cons.ALIGN_TOP_LEFT)
-	Top_Left_Composition.AddDrawable(Button_Top_Left)
-
-	var Button_Top_Right = comp.CreateButton(
-		"ALIGN_TOP_RIGHT",
-		A.WindowCanvas, 
-		200, 50, 300, 50, 
-		20,
-		2,
-		2,
-		250,
-		&event.NULL_EVENT,
-		"Base/Components/Fonts/luxi.ttf",
-		"luxi", 
-		16,
-		colours.BLUE,
-		colours.DARK_BLUE,
-		colours.GRAY,
-		colours.GRAY,
-		colours.WHITE,
+	topLeftComposition.AddDisplayable(topLeftButton)
+	var topRightButton = comp.CreateButton( A.WindowCanvas, topRightComposition, "Top Right",
+		100, 50, 20, 0, 0, 0,
+		"luxi", "base/components/fonts/luxi.ttf", 16,
+		&event.NULL_EVENT, 200,
 	)
-	var Top_Right_Composition = ompo.NewBoxComposition("Top Left Composition", 
-						0, 0, 
-						window_w, 
-						window_h, 
-						cons.ALIGN_TOP_RIGHT)
-	Top_Right_Composition.AddDrawable(Button_Top_Right)
-
-	var Button_Bottom_Right = comp.CreateButton(
-		"ALIGN_BOTTOM_RIGHT",
-		A.WindowCanvas, 
-		200, 50, 300, 50, 
-		20,
-		2,
-		2,
-		250,
-		&event.NULL_EVENT,
-		"Base/Components/Fonts/luxi.ttf",
-		"luxi", 
-		16,
-		colours.BLUE,
-		colours.DARK_BLUE,
-		colours.GRAY,
-		colours.GRAY,
-		colours.WHITE,
+	topRightComposition.AddDisplayable(topRightButton)
+	var topCentreButton = comp.CreateButton( A.WindowCanvas, topCentreComposition, "Top Centre",
+		100, 50, 20, 0, 0, 0,
+		"luxi", "base/components/fonts/luxi.ttf", 16,
+		&event.NULL_EVENT, 200,
 	)
-	var Bottom_Right_Composition = ompo.NewBoxComposition("Bottom Right Composition", 
-						0, 0, 
-						window_w, 
-						window_h, 
-						cons.ALIGN_BOTTOM_RIGHT)
-	Bottom_Right_Composition.AddDrawable(Button_Bottom_Right)
-
-	var Button_Bottom_Left = comp.CreateButton(
-		"ALIGN_BOTTOM_LEFT",
-		A.WindowCanvas, 
-		200, 50, 300, 50, 
-		20,
-		2,
-		2,
-		250,
-		&event.NULL_EVENT,
-		"Base/Components/Fonts/luxi.ttf",
-		"luxi", 
-		16,
-		colours.BLUE,
-		colours.DARK_BLUE,
-		colours.GRAY,
-		colours.GRAY,
-		colours.WHITE,
+	topCentreComposition.AddDisplayable(topCentreButton)
+	var leftButton = comp.CreateButton( A.WindowCanvas, leftComposition, "Left",
+		100, 50, 20, 0, 0, 0,
+		"luxi", "base/components/fonts/luxi.ttf", 16,
+		&event.NULL_EVENT, 200,
 	)
-	var Bottom_Left_Composition = ompo.NewBoxComposition("Bottom Left Composition", 
-						0, 0, 
-						window_w, 
-						window_h, 
-						cons.ALIGN_BOTTOM_LEFT)
-	Bottom_Left_Composition.AddDrawable(Button_Bottom_Left)
-
-	var Button_Bottom_Centre = comp.CreateButton(
-		"ALIGN_BOTTOM_CENTRE",
-		A.WindowCanvas, 
-		200, 50, 300, 50, 
-		20,
-		2,
-		2,
-		250,
-		&event.NULL_EVENT,
-		"Base/Components/Fonts/luxi.ttf",
-		"luxi", 
-		16,
-		colours.BLUE,
-		colours.DARK_BLUE,
-		colours.GRAY,
-		colours.GRAY,
-		colours.WHITE,
+	leftComposition.AddDisplayable(leftButton)
+	var rightButton = comp.CreateButton( A.WindowCanvas, rightComposition, "Right",
+		100, 50, 20, 0, 0, 0,
+		"luxi", "base/components/fonts/luxi.ttf", 16,
+		&event.NULL_EVENT, 200,
 	)
-	var Bottom_Centre_Composition = ompo.NewBoxComposition("Bottom Centre Composition", 
-						0, 0, 
-						window_w, 
-						window_h, 
-						cons.ALIGN_BOTTOM_CENTRE)
-	Bottom_Centre_Composition.AddDrawable(Button_Bottom_Centre)
-
-	var Button_Top_Centre = comp.CreateButton(
-		"ALIGN_TOP_CENTRE",
-		A.WindowCanvas, 
-		200, 50, 300, 50, 
-		20,
-		2,
-		2,
-		250,
-		&event.NULL_EVENT,
-		"Base/Components/Fonts/luxi.ttf",
-		"luxi", 
-		16,
-		colours.BLUE,
-		colours.DARK_BLUE,
-		colours.GRAY,
-		colours.GRAY,
-		colours.WHITE,
+	rightComposition.AddDisplayable(rightButton)
+	var bottomLeftButton = comp.CreateButton( A.WindowCanvas, bottomLeftComposition, "Bottom Left",
+		100, 50, 20, 0, 0, 0,
+		"luxi", "base/components/fonts/luxi.ttf", 16,
+		&event.NULL_EVENT, 200,
 	)
-	var Top_Centre_Composition = ompo.NewBoxComposition("Top Centre Composition", 
-						0, 0, 
-						window_w, 
-						window_h, 
-						cons.ALIGN_TOP_CENTRE)
-	Top_Centre_Composition.AddDrawable(Button_Top_Centre)
-
-	var Button_Centre_Left = comp.CreateButton(
-		"ALIGN_CENTRE_LEFT",
-		A.WindowCanvas, 
-		200, 50, 300, 50, 
-		20,
-		2,
-		2,
-		250,
-		&event.NULL_EVENT,
-		"Base/Components/Fonts/luxi.ttf",
-		"luxi", 
-		16,
-		colours.BLUE,
-		colours.DARK_BLUE,
-		colours.GRAY,
-		colours.GRAY,
-		colours.WHITE,
+	bottomLeftComposition.AddDisplayable(bottomLeftButton)
+	var bottomRightButton = comp.CreateButton( A.WindowCanvas, bottomRightComposition, "Bottom Right",
+		100, 50, 20, 0, 0, 0,
+		"luxi", "base/components/fonts/luxi.ttf", 16,
+		&event.NULL_EVENT, 200,
 	)
-	var Centre_Left_Composition = ompo.NewBoxComposition("Centre Left Composition", 
-						0, 0, 
-						window_w, 
-						window_h, 
-						cons.ALIGN_CENTRE_LEFT)
-	Centre_Left_Composition.AddDrawable(Button_Centre_Left)
-
-	var Button_Centre_Right = comp.CreateButton(
-		"ALIGN_CENTRE_RIGHT",
-		A.WindowCanvas, 
-		200, 50, 300, 50, 
-		20,
-		2,
-		2,
-		250,
-		&event.NULL_EVENT,
-		"Base/Components/Fonts/luxi.ttf",
-		"luxi", 
-		16,
-		colours.BLUE,
-		colours.DARK_BLUE,
-		colours.GRAY,
-		colours.GRAY,
-		colours.WHITE,
+	bottomRightComposition.AddDisplayable(bottomRightButton)
+	var bottomCentreButton = comp.CreateButton( A.WindowCanvas, bottomCentreComposition, "Bottom Centre",
+		100, 50, 20, 0, 0, 0,
+		"luxi", "base/components/fonts/luxi.ttf", 16,
+		&event.NULL_EVENT, 200,
 	)
-	var Centre_Right_Composition = ompo.NewBoxComposition("Centre Right Composition", 
-						0, 0, 
-						window_w, 
-						window_h, 
-						cons.ALIGN_CENTRE_RIGHT)
-	Centre_Right_Composition.AddDrawable(Button_Centre_Right)
+	bottomCentreComposition.AddDisplayable(bottomCentreButton)
 
-	A.GetWindowCanvas().AddComponent(Centre_Composition)
-	A.GetWindowCanvas().AddComponent(Top_Left_Composition)
-	A.GetWindowCanvas().AddComponent(Top_Right_Composition)
-	A.GetWindowCanvas().AddComponent(Bottom_Right_Composition)
-	A.GetWindowCanvas().AddComponent(Bottom_Left_Composition)
-	A.GetWindowCanvas().AddComponent(Bottom_Centre_Composition)
-	A.GetWindowCanvas().AddComponent(Top_Centre_Composition)
-	A.GetWindowCanvas().AddComponent(Centre_Left_Composition)
-	A.GetWindowCanvas().AddComponent(Centre_Right_Composition)
+	A.GetWindowCanvas().AddDisplayable(centreComposition)
+	A.GetWindowCanvas().AddDisplayable(topLeftComposition)
+	A.GetWindowCanvas().AddDisplayable(topRightComposition)
+	A.GetWindowCanvas().AddDisplayable(bottomRightComposition)
+	A.GetWindowCanvas().AddDisplayable(bottomLeftComposition)
+	A.GetWindowCanvas().AddDisplayable(bottomCentreComposition)
+	A.GetWindowCanvas().AddDisplayable(topCentreComposition)
+	A.GetWindowCanvas().AddDisplayable(leftComposition)
+	A.GetWindowCanvas().AddDisplayable(rightComposition)
 
 /** Telling the mouse handler that the button components are clickable **/
-	//A.GetMouseHandler().RegisterClickableToHandler(component1)
+	A.GetMouseHandler().RegisterClickableToHandler(centreButton)
 	
 	A.RunWindow()
 }

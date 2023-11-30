@@ -18,6 +18,7 @@ type Rectangle_Struct struct {
 	colour 			[3]float32
 
 	posX, posY, posZ float32
+	radius float32
 
 	openGLWindowWidth, openGLWindowHeight float32
 	masterWidth, masterHeight float32
@@ -25,12 +26,13 @@ type Rectangle_Struct struct {
 
 	drawable *foundations.Drawable
 }
-func CreateRectangle(
+func NewRectangle(
 	canvas 				*Canvas_Struct, 
 	masterStruct		intf.Displayable,
 	name 				string,
 	width, height 		float32,
-	pos_x, pos_y, pos_z	float32, 
+	pos_x, pos_y, pos_z	float32,
+	radius				float32, 
 	colour  			[3]float32,
 	fill_style   		int,
 ) *Rectangle_Struct {
@@ -40,6 +42,7 @@ func CreateRectangle(
 		name,
 		colour, 
 		pos_x, pos_y, pos_z,
+		radius,
 		canvas.GetWidth(), canvas.GetHeight(),
 		masterStruct.GetWidth(), masterStruct.GetHeight(),
 		0,0,
@@ -54,6 +57,12 @@ func CreateRectangle(
 		r.slaveWidth = masterStruct.GetWidth()
 		r.slaveHeight = masterStruct.GetHeight()
 		r.posX, r.posY, r.posZ = masterStruct.GetPos()
+	} else {
+		r.slaveHeight = height
+		r.slaveWidth = width
+		r.posX = pos_x
+		r.posY = pos_y
+		r.posZ = pos_z
 	}
 	
 	r.GeneratePolygons()
@@ -65,7 +74,7 @@ func CreateRectangle(
 // Stores the VAO in intf.Drawing_Struct alongisde the drawing mode (gl.TRIANGLE or gl.TRIANGLE_FAN)
 func (r *Rectangle_Struct) GeneratePolygons(){
 	r.drawable.ClearPolygons()
-	r.drawable.CreateRectangle(r.colour, r.slaveWidth, r.slaveHeight, r.posX, r.posY, r.posZ)
+	r.drawable.CreateRoundedRectangle(r.colour, r.slaveWidth, r.slaveHeight, r.posX, r.posY, r.posZ, r.radius)
 }
 // Draw()
 // This method draws the VAO array to gl using the canvas program.
@@ -101,3 +110,6 @@ func (r *Rectangle_Struct) GetPos() (float32, float32, float32) { return r.posX,
  **/
 func (r *Rectangle_Struct) SetName(name string){ r.name = name }
 func (r *Rectangle_Struct) GetName() string { return r.name }
+
+func (r *Rectangle_Struct) GetMasterStruct() intf.Displayable { return r.masterStruct }
+func (r *Rectangle_Struct) SetMasterStruct(master intf.Displayable) { r.masterStruct = master }
