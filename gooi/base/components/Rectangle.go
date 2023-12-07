@@ -5,60 +5,78 @@ package components
  * Implements Drawable -> Component -> Clickable.
  **/
 import (
-	gl 		"github.com/go-gl/gl/v4.1-core/gl"
-	
-	intf 	"gooi/interfaces"
-	
-	log 	"log"
-	fmt 	"fmt"
+	intf 		"gooi/interfaces"
+	cons 		"gooi/base/constants"
+	foundations "gooi/base/components/foundation"
+	colours 	"gooi/base/colours"
+	"fmt"
 )
 type Rectangle_Struct struct {
-	Name 			string
+	canvas 			intf.Canvas_Interface
+	masterStruct 	intf.Displayable
 
-	XYZ 			[]float32
-	RGB 			[]float32 
-	DIM 			[]float32
-	VAO 			[]intf.Drawing_Struct
-	Canvas 		 	*Canvas_Struct
+	name 			string
 	
-	Width, Height 	float32
-	Pos_x, Pos_y 	float32
-	Pos_z 			float32
-	
-	WindowHeight    		*float32
-	WindowHeight_Initial 	float32
-	WindowWidth   			*float32
-	WindowWidth_Initial 	float32
-	
-	BackgroundColour [3]float32
+	colour 			[3]float32
+
+	posX, posY, posZ float32
+	radius float32
+
+	openGLWindowWidth, openGLWindowHeight float32
+	masterWidth, masterHeight float32
+	slaveWidth, slaveHeight float32
+
+	drawable *foundations.Drawable
+
+	fillStyle int
 }
-/**
- * CreateButton
- * 	Creates a new button composable.
- **/
-func CreateRectangle(
-	canvas 			*Canvas_Struct, 
-	width, height 	float32,
-	pos_x, pos_y 	float32, 
-	colour  		[3]float32,
+func NewRectangle(
+	canvas 				intf.Canvas_Interface, 
+	masterStruct		intf.Displayable,
+	name 				string,
+	width, height 		float32,
+	pos_x, pos_y, pos_z	float32,
+	radius				float32, 
+	colour  			[3]float32,
+	fill_style   		int,
+	position_style 		int,
 ) *Rectangle_Struct {
-	log.Println("creating new thembed [Button] struct.")
-	var r = Rectangle_Struct{}
-	// Specified paramaters
-	r.Canvas = canvas
-	r.Width = width
-	r.Height = height
-	r.Pos_x = pos_x
-	r.Pos_y = pos_y
-	r.Pos_z = 0.0
-	
+	var r = Rectangle_Struct{
+		canvas, 
+		masterStruct,
+		name,
+		colour, 
+		pos_x, pos_y, pos_z,
+		radius,
+		canvas.GetWidth(), canvas.GetHeight(),
+		masterStruct.GetWidth(), masterStruct.GetHeight(),
+		0,0,
+		foundations.NewDrawable(
+			canvas, 
+			masterStruct,
+			canvas.GetWidth(), canvas.GetHeight(),
+		),
+		fill_style,
+	}
 
-	r.WindowWidth = canvas.CanvasWindow.GetWindowWidth()
-	r.WindowHeight = canvas.CanvasWindow.GetWindowHeight()
-	r.WindowWidth_Initial = *canvas.CanvasWindow.GetWindowWidth()
-	r.WindowHeight_Initial = *canvas.CanvasWindow.GetWindowHeight()
-	
-	r.BackgroundColour = colour
+	if fill_style == cons.FILL_MASTER_DIMENSIONS {
+		r.slaveWidth = masterStruct.GetWidth()
+		r.slaveHeight = masterStruct.GetHeight()
+	} else {
+		r.slaveHeight = height
+		r.slaveWidth = width
+		r.posX = pos_x
+		r.posY = pos_y
+		r.posZ = pos_z
+	}
+
+	if position_style == cons.MATCH_MASTER_POSITION {
+		r.posX, r.posY, r.posZ = masterStruct.GetPos()
+	} else {
+		r.posX = pos_x
+		r.posY = pos_y
+		r.posZ = pos_z
+	}
 	
 	r.GeneratePolygons()
 	
@@ -68,70 +86,56 @@ func CreateRectangle(
 // Generates the VAO array of the polygons used to draw the button. 
 // Stores the VAO in intf.Drawing_Struct alongisde the drawing mode (gl.TRIANGLE or gl.TRIANGLE_FAN)
 func (r *Rectangle_Struct) GeneratePolygons(){
-	r.VAO = make([]intf.Drawing_Struct, 2)
-	// Border rectangles 
-	r.VAO[0] = intf.Drawing_Struct{ intf.GenerateRectangle(r, r.BackgroundColour, r.Width, r.Height, r.Pos_x, r.Pos_y, r.Pos_z, r.WindowHeight_Initial, r.WindowWidth_Initial), gl.TRIANGLES }
-	r.VAO[1] = intf.Drawing_Struct{ intf.GenerateRectangle(r, r.BackgroundColour, r.Width, r.Height, r.Pos_x, r.Pos_y, r.Pos_z, r.WindowHeight_Initial, r.WindowWidth_Initial), gl.TRIANGLES }
+	if r.fillStyle == cons.FILL_MASTER_DIMENSIONS {
+		r.slaveWidth = r.masterStruct.GetWidth()
+		fmt.Printf("Slave width is = %v\n", r.slaveWidth)
+		r.slaveHeight = r.masterStruct.GetHeight()
+		r.posX, r.posY, r.posZ = r.masterStruct.GetPos()
+		fmt.Println("\t\tREDRAWING USING NEW SIZE!!!!")
+	}
+	if r.colour != colours.NONE {
+		r.drawable.ClearPolygons()
+		r.drawable.CreateRoundedRectangle(r.colour, r.slaveWidth, r.slaveHeight, r.posX, r.posY, r.posZ, r.radius)
+	}
 }
 // Draw()
 // This method draws the VAO array to gl using the canvas program.
 func (r *Rectangle_Struct) Draw() {
-	// Obtain program that isnt FontProg
-	gl.UseProgram(r.GetCanvas().GetPrograms())
-	for _, v := range r.GetVAO(){
-		gl.BindVertexArray(v.VAO)
-		gl.DrawArrays(v.DrawMode, 0, int32(len(r.GetXYZ())/3))
+	if r.colour != colours.NONE {
+		r.drawable.Draw()
 	}
-	// Draw button text (Uses FontProg program)
-	// Modified glText implementation:
 }
 func (r *Rectangle_Struct) Redraw() {
-	r.GeneratePolygons()
-	gl.UseProgram(r.GetCanvas().GetPrograms())
-	for _, v := range r.GetVAO(){
-		gl.BindVertexArray(v.VAO)
-		gl.DrawArrays(v.DrawMode, 0, int32(len(r.GetXYZ())/3))
+	if r.colour != colours.NONE {
+		r.GeneratePolygons()
+		r.drawable.Draw()
 	}
-	// Draw button text (Uses FontProg program)
-	// Modified glText implementation:
-	//b.Button_Text.Text.Font.ResizeWindow(*b.WindowWidth, *b.WindowHeight)
 }
-// Move()
-// This method moves the button and the clickable area of the button.
-func (r *Rectangle_Struct) Move(delta_x, delta_y float32) {
-	log.Println(fmt.Sprintf("moving [Button] by %v, %v.", delta_x, delta_y))
-	r.Pos_y = r.Pos_y + delta_y
-	r.Pos_x = r.Pos_x + delta_x
-	r.GeneratePolygons()
-} 
+
+func (r *Rectangle_Struct) GetWidth() float32 {
+	return r.slaveWidth
+}
+func (r *Rectangle_Struct) GetHeight() float32 {
+	return r.slaveHeight
+}
+
 // SetPos(float32, float32) & GetPos() float32, float32
 // Sets the position on the window (absolute)
 // Origin starting in the bottom left corner of the window.
 // Updates clickable bounds and re-draws.
-func (r *Rectangle_Struct) SetPos(x, y float32) { 
-	r.Pos_x = x
-	r.Pos_y = y
+func (r *Rectangle_Struct) SetPos(x, y, z float32) { 
+	r.posX = x
+	r.posY = y
+	r.posZ = z
 	r.GeneratePolygons()
-	r.GetCanvas().RefreshCanvas()	
+	r.canvas.RefreshCanvas()	
 }
-func (r *Rectangle_Struct) GetPos() (float32, float32) { return r.Pos_x, r.Pos_y }
+func (r *Rectangle_Struct) GetPos() (float32, float32, float32) { return r.posX, r.posY, r.posZ }
 /**
  * Other Setter and Getter Methods
  **/
-func (r *Rectangle_Struct) SetName(name string){ r.Name = name }
-func (r *Rectangle_Struct) GetName() string { return r.Name }
-func (r *Rectangle_Struct) SetDIM(dim []float32){ r.DIM = dim }
-func (r *Rectangle_Struct) GetDIM() []float32 { return r.DIM }
-func (r *Rectangle_Struct) SetXYZ(xyz []float32){ r.XYZ = xyz }
-func (r *Rectangle_Struct) GetXYZ() []float32 { return r.XYZ }
-func (r *Rectangle_Struct) SetRGB(rgb []float32){ r.RGB = rgb }
-func (r *Rectangle_Struct) GetRGB() []float32 { return r.RGB }
-func (r *Rectangle_Struct) SetVAO(vao []intf.Drawing_Struct){ r.VAO = vao }
-func (r *Rectangle_Struct) GetVAO() []intf.Drawing_Struct { return r.VAO }
-func (r *Rectangle_Struct) GetCanvas() intf.Canvas_Interface { return r.Canvas }
-func (r *Rectangle_Struct) SetPosZ(z float32){
-	r.Pos_z = z
-}
-func (r *Rectangle_Struct) GetPosZ() float32 {
-	return r.Pos_z
-}
+func (r *Rectangle_Struct) SetName(name string){ r.name = name }
+func (r *Rectangle_Struct) GetName() string { return r.name }
+
+func (r *Rectangle_Struct) GetMasterStruct() intf.Displayable { return r.masterStruct }
+func (r *Rectangle_Struct) SetMasterStruct(master intf.Displayable) { r.masterStruct = master }

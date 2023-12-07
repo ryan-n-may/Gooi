@@ -65,6 +65,7 @@ func (kh *KeyHandler_Struct) AddKeyEvent(key glfw.Key, mod glfw.ModifierKey){
 			kh.GetFocus().SetDisplayText(prev_text[:cursor_pos-1] + prev_text[cursor_pos:])
 			kh.GetFocus().SetCursorIndex(cursor_pos-1) 
 			kh.GetFocus().GeneratePolygons()
+			fmt.Println("Backspace")
 		// Delete
 		} else if kh.GetFocus() != nil && key_struct.Key == glfw.KeyDelete && cursor_pos != len(prev_text) {
 			kh.GetFocus().SetDisplayText(prev_text[:cursor_pos] + prev_text[cursor_pos+1:]) 
@@ -74,10 +75,15 @@ func (kh *KeyHandler_Struct) AddKeyEvent(key glfw.Key, mod glfw.ModifierKey){
 			kh.GetFocus().SetDisplayText(prev_text[:cursor_pos] + kh.KeyQueueToString() + prev_text[cursor_pos:])
 			kh.GetFocus().SetCursorIndex(cursor_pos+1)
 			kh.GetFocus().GeneratePolygons()
+			fmt.Println("Adding character")
 		} else if kh.GetFocus() != nil && cursor_pos == len(prev_text) && !kh.GetFocus().IsMaxLength() {
 			kh.GetFocus().SetDisplayText(prev_text + kh.KeyQueueToString())
 			kh.GetFocus().SetCursorIndex(cursor_pos+1)
 			kh.GetFocus().GeneratePolygons()
+			fmt.Println("Adding character at end")
+		} else {
+			fmt.Println(kh.GetFocus().IsMaxLength())
+			fmt.Println("Not sure")
 		}
 	}
 	kh.FlushKeyQueue()

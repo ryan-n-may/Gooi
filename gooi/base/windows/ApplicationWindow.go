@@ -8,9 +8,11 @@ import (
 	runtime "runtime"
 	colours "gooi/base/colours"
 	log 	"log"
+	time 	"time"
 )
 var (
 	resizing bool
+	oldResizing bool
 )
 
 type ApplicationWindow_Struct struct {
@@ -141,6 +143,7 @@ func (A *ApplicationWindow_Struct) RunWindow() {
 	A.GetWindow().SetSizeCallback(A.resizeCallback)
 	log.Println("[Window] loop refreshes canvas, polls events, and executes event queue.")
 	for !A.Window.ShouldClose(){
+		if resizing { A.GetWindowCanvas().Redraw() }
 		A.GetWindowCanvas().RefreshCanvas()
 		glfw.PollEvents()
 		A.GetWindowCanvas().GetEventHandler().ExecuteNextEvent()
@@ -155,16 +158,28 @@ func (A* ApplicationWindow_Struct) mouseButtonCallback(
 	mods glfw.ModifierKey) {
 		log.Println("Mouse clicked in [Window].")
 		var mouse_x, mouse_y, pressed = A.GetMouseHandler().GetClickData(A.Window)
-		A.GetMouseHandler().CheckClick(int(mouse_x), int(mouse_y), pressed, mods)
+		A.GetMouseHandler().CheckClick(mouse_x, mouse_y, pressed, mods)
 		A.GetWindow().Show()
 		log.Println("Refreshing [Canvas].")
 		A.GetWindowCanvas().RefreshCanvas()
 }
 
 func (A* ApplicationWindow_Struct) resizeCallback(window *glfw.Window, width int, height int){
+	if !resizing {
+		resizing = true
+		go A.resizeTimeout()
+		A.resize()
+	}
+}
+
+func (A* ApplicationWindow_Struct) resizeTimeout(){
+	time.Sleep(100 * time.Millisecond)
+	resizing = false
+	A.resize() 
+}
+
+func (A* ApplicationWindow_Struct) resize(){
 	var window_w, window_h = A.Window.GetSize()
 	*A.Width = float32(window_w)
 	*A.Height = float32(window_h)
-	A.GetWindowCanvas().Redraw()
-	A.GetWindowCanvas().RefreshCanvas()
 }

@@ -2,107 +2,129 @@ package compositions
 import (
 	intf 	"gooi/interfaces"
 	cons 	"gooi/base/constants"
-	log 	"log"
+	ly 		"gooi/base/compositions/layout"
 )
-type Row_Struct struct {
-	RowName string
-	Master_Pos_x float32
-	Master_Pos_y float32
-	Master_Height float32
-	Master_Width float32
-	Padding float32
-	Alignment int
-	Drawables []intf.Drawable_Interface
+type Row struct {
+	name string
+	layout *ly.Layout
+
+	alignment int
+	displayables []intf.Displayable
+
+	slaveWidth, slaveHeight float32
+
+	posX, posY, posZ float32
 }
-func NewRowComposition(name string, pos_x, pos_y, padding float32, alignment int) (*Row_Struct) {
-		log.Println("new [Row].")
-		var row = Row_Struct{}
-		row.RowName = name
-		row.Master_Pos_x = pos_x
-		row.Master_Pos_y = pos_y
-		row.Padding = padding
-		row.Master_Width = 0
-		row.Master_Height = 0
-		row.Alignment = alignment
-		row.Drawables = make([]intf.Drawable_Interface, 0)
+
+func NewRowComposition(
+	name string, 
+	canvas intf.Canvas_Interface,
+	masterStruct intf.Displayable,
+	x, y, z float32, 
+	alignment int,
+) (*Row) {
+		var row = Row{
+			name,
+			ly.NewLayout(canvas, masterStruct),
+			alignment, 
+			make([]intf.Displayable, 0),
+			0, 0,
+			x, y, z,
+		}
 		return &row
 }
-func (row *Row_Struct) AddDrawable(drawable intf.Drawable_Interface){
-	row.Drawables = append(row.Drawables, drawable)
-	row.MoveComponents()
+func (row *Row) AddDisplayable(displayable intf.Displayable){
+	row.displayables = append(row.displayables, displayable)
+	row.ArrangeLayout()
 }
-func (row *Row_Struct) MoveComponents(){
-	//log.Println("moving [Row] components.")
+func (row *Row) ArrangeLayout(){
+
+	var padding float32 = 10
+
+	//row.slaveWidth = row.slaveWidthRatio * row.layout.GetMasterStruct().GetWidth()
+	//row.slaveHeight = row.slaveHeightRatio * row.layout.GetMasterStruct().GetHeight()
+
 	var alignment float32 = 0
-	if row.Alignment == cons.ALIGN_TOP {
+	if row.alignment == cons.ALIGN_TOP {
 		alignment = 1
-	} else if row.Alignment == cons.ALIGN_BOTTOM {
+	} else if row.alignment == cons.ALIGN_BOTTOM {
 		alignment = 0
-	} else if row.Alignment == cons.ALIGN_CENTRE_ROW {
+	} else if row.alignment == cons.ALIGN_CENTRE_ROW {
 		alignment = 0.5
 	} else {
 		alignment = 0.5
 	}
-	var current_x = row.Master_Pos_x
-	var current_y = row.Master_Pos_y
-	row.Master_Width = 0
-	var width, height = row.Drawables[0].GetBounds()
-	if height > row.Master_Height {
-		row.Master_Height = height
-	}
-	row.Master_Width += width 
-	row.Drawables[0].SetPos(current_x, current_y - height*alignment)
-	for i := 1 ; i < len(row.Drawables); i++ {
-		var prev_width, _ = row.Drawables[i-1].GetBounds()
-		var current_width, current_height = row.Drawables[i].GetBounds()
-		row.Master_Width += (current_width + row.Padding)
-		current_x = current_x + prev_width + row.Padding
-		row.Drawables[i].SetPos(current_x, current_y - current_height*alignment)
-		if current_height > row.Master_Height {
-			row.Master_Height = current_height
+	if len(row.displayables) != 0 {
+		var current_x = row.posX
+		var current_y = row.posY
+		
+		var progressWidth float32 = 0
+		var greatestHeight float32 = 0
+		
+		var width = row.displayables[0].GetWidth()
+		var height = row.displayables[0].GetHeight()
+		if height > greatestHeight {
+			greatestHeight = height
 		}
-	}
-	for i := 0 ; i < len(row.Drawables); i++ {
-		var x, y = row.Drawables[i].GetPos()
-		if row.Alignment == cons.ALIGN_TOP {
-			row.Drawables[i].SetPos(x, y + row.Master_Height)
-		} else if row.Alignment == cons.ALIGN_BOTTOM {
-			row.Drawables[i].SetPos(x, y + 0)
-		} else if row.Alignment == cons.ALIGN_CENTRE_ROW {
-			row.Drawables[i].SetPos(x, y + row.Master_Height/2)
-		} else {
-			row.Drawables[i].SetPos(x, y + row.Master_Height/2)
+		progressWidth += (width + padding * 2)
+		row.displayables[0].SetPos(current_x, current_y - height*alignment, row.posZ)
+		for i := 1 ; i < len(row.displayables); i++ {
+			var prev_width = row.displayables[i-1].GetWidth()
+			
+			var current_width = row.displayables[i].GetWidth()
+			var current_height = row.displayables[i].GetHeight()
+
+			progressWidth += (current_width + padding)
+			current_x = current_x + prev_width + padding
+			row.displayables[i].SetPos(current_x, current_y - current_height*alignment, row.posZ)
+			if current_height > greatestHeight {
+				greatestHeight = current_height
+			}
 		}
+
+		row.slaveHeight = greatestHeight
+		row.slaveWidth = progressWidth
+		
+		
+		for i := 0 ; i < len(row.displayables); i++ {
+			var x, y, _ = row.displayables[i].GetPos()
+			if row.alignment == cons.ALIGN_TOP {
+				row.displayables[i].SetPos(x, y + row.slaveHeight, row.posZ)
+			} else if row.alignment == cons.ALIGN_BOTTOM {
+				row.displayables[i].SetPos(x, y + 0, row.posZ)
+			} else if row.alignment == cons.ALIGN_CENTRE_ROW {
+				row.displayables[i].SetPos(x, y + row.slaveHeight/2, row.posZ)
+			} else {
+				row.displayables[i].SetPos(x, y + row.slaveHeight/2, row.posZ)
+			}
+		}
+		
+
 	}
 }
-func (row *Row_Struct) Draw(){
-	for i := 0 ; i < len(row.Drawables); i++ {
-		row.Drawables[i].Draw()
+func (row *Row) Draw(){
+	for i := 0 ; i < len(row.displayables); i++ {
+		row.displayables[i].Draw()
 	}
 }
-func (row *Row_Struct) Redraw(){
-	row.MoveComponents()
-	for i := 0 ; i < len(row.Drawables); i++ {
-		row.Drawables[i].Redraw()
+func (row *Row) Redraw(){
+	row.ArrangeLayout()
+	for i := 0 ; i < len(row.displayables); i++ {
+		row.displayables[i].Redraw()
 	}
 }
-func (row *Row_Struct) SetPos(x, y float32){
-	row.Master_Pos_x = x
-	row.Master_Pos_y = y
-	row.MoveComponents()
+func (row *Row) SetPos(x, y, z float32){
+	row.posX = x
+	row.posY = y
+	row.posZ = z
+	row.Redraw()
 }
-func (row *Row_Struct) GetPos() (float32, float32){
-	return row.Master_Pos_x, row.Master_Pos_y
-}
-func (row *Row_Struct) GetBounds() (float32, float32){
-	return row.Master_Width, row.Master_Height
+func (row *Row) GetPos() (float32, float32, float32){
+	return row.posX, row.posY, row.posZ
 }
 
-func (row *Row_Struct) SetPosZ(z float32) {
-	for i := 0 ; i < len(row.Drawables); i++ {
-		row.Drawables[i].SetPosZ(z)
-	}
-}
-func (row *Row_Struct) GetPosZ() float32 {
-	return row.Drawables[0].GetPosZ()
-}
+func (row *Row) GetWidth() float32 { return row.slaveWidth }
+func (row *Row) GetHeight() float32 { return row.slaveHeight }
+
+func (row *Row) GetMasterStruct() intf.Displayable { return row.layout.GetMasterStruct() }
+func (row *Row) SetMasterStruct(displayable intf.Displayable) { row.layout.SetMasterStruct(displayable) }
