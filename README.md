@@ -5,10 +5,11 @@ An openGL based GUI framework built for desktop Golang applications. Student Pro
 ![OpenGL](https://img.shields.io/badge/OpenGL-%23FFFFFF.svg?style=for-the-badge&logo=opengl)
 
 ## Contents 
-- Window and Canvas
-- Constants
-- Components
-- Compositions
+- ![Window and Canvas](https://github.com/ryan-n-may/Gooi/blob/ryan-n-may-patch-2/README.md#the-window-and-canvas)
+- ![Important Interface](https://github.com/ryan-n-may/Gooi/blob/ryan-n-may-patch-2/README.md#important-interfaces)
+- ![Constants](https://github.com/ryan-n-may/Gooi/blob/ryan-n-may-patch-2/README.md#constants)
+- ![Components](https://github.com/ryan-n-may/Gooi/blob/ryan-n-may-patch-2/README.md#components)
+- ![Compositions](https://github.com/ryan-n-may/Gooi/blob/ryan-n-may-patch-2/README.md#compositions)
 - Events
 - Key and Mouse Listeners
   
