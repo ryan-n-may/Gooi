@@ -10,8 +10,9 @@ An openGL based GUI framework built for desktop Golang applications. Student Pro
 - [Constants](#constants)
 - [Components](#components)
 - [Compositions](#compositions)
-- Events
-- Key and Mouse Listeners
+- [Events](#event-handling)
+- [Mouse Handler](#mouse-handler)
+- [Key Handler](#key-handler)
   
 # Usage 
 ## The Window and Canvas
