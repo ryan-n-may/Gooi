@@ -472,7 +472,7 @@ compositions.NewBoxComposition(name string, canvas intf.Canvas_Interface, master
 ```
 - `slaveWidthRatio` and `slaveHeightRatio` refers to a fractional proportion of the masterStruct dimensions.
 - ie: `(0.5, 0.5)` would indicate that the box composition takes up 1/4 of the masterStruct dimensisons.
-![ColumnAlignment](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/box_alignment.png)
+![BoxAlignment](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/box_alignment.png)
 ### Stack composition
 - Stack composition is an extension of box that allows for multiple `intf.Displayable` structs to the displayed in the same composition, with unique alignments.
 ```golang
@@ -500,7 +500,7 @@ compositions.NewColumnComposition(name string, canvas intf.Canvas_Interface, mas
 ```golang
 compositions.NewRowComposition(name string, canvas intf.Canvas_Interface, masterStruct intf.Displayable, x, y, z float32, alignment int)
 ```
-![ColumnAlignment](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/row_alignment.png)
+![RowAlignment](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/row_alignment.png)
 ### Tabs composition (Alpha)
 - The tabbed composition allows for multiple box compositions to be switched between via the use of a row of selection buttons.
 ``` golang
