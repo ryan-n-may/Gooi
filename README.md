@@ -56,7 +56,7 @@ components.NewButton(intf.Canvas_Interface, MasterStruct intf.Displayable, Name 
 ### Label 
 The Label composition implements the Writing compositional struct. 
 
-![Button](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/button.png)
+![Label](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/label.png)
 
 <details>
   <summary>Label struct</summary>
@@ -84,7 +84,7 @@ components.NewLabel(intf.Canvas_Interface, MasterStruct intf.Displayable, Name s
 ### CheckBox 
 The CheckBox composition is composed of the Drawable, Clickable, Writing, and Animation compositional structs. 
 
-![Button](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/button.png)
+![Checkbox](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/checkbox.png)
 
 <details>
   <summary>CheckBox struct</summary>
@@ -120,8 +120,6 @@ components.NewCheckBox(intf.Canvas_Interface, MasterStruct intf.Displayable, Nam
 ### Rectangle 
 The Rectangle composition is composed of the Drawable compositional struct.
 
-![Button](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/button.png)
-
 <details>
   <summary>Rectangle struct</summary>
   
@@ -153,7 +151,7 @@ components.NewRectangle(intf.Canvas_Interface, MasterStruct intf.Displayable, Na
 ### TextInput 
 The TextInput composition is composed of the Input struct. By extension, it is indirectly composed of the Drawable, Writing, and Clickable structs. Additionally, it explicitly implements the Writing struct via the input prompt (see TextInput struct). 
 
-![Button](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/button.png)
+![TextInput](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/input.png)
 
 <details>
   <summary>TextInput struct</summary>
@@ -185,7 +183,7 @@ components.NewTextInput(intf.Canvas_Interface, MasterStruct intf.Displayable, Na
 ### ToggleSwitch 
 The ToggleSwitch composition is composed of the Drawable, Animation, Writing, and Clickable compositional structs. 
 
-![Button](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/button.png)
+![ToggleSwitch](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/toggle.png)
 
 <details>
   <summary>ToggleSwitch struct</summary>
