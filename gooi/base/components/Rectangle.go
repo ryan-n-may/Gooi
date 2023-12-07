@@ -29,6 +29,7 @@ type Rectangle_Struct struct {
 	drawable *foundations.Drawable
 
 	fillStyle int
+	positionStyle int
 }
 func NewRectangle(
 	canvas 				intf.Canvas_Interface, 
@@ -57,6 +58,7 @@ func NewRectangle(
 			canvas.GetWidth(), canvas.GetHeight(),
 		),
 		fill_style,
+		position_style,
 	}
 
 	if fill_style == cons.FILL_MASTER_DIMENSIONS {

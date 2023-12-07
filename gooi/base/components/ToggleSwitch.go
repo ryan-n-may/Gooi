@@ -41,7 +41,7 @@ type ToggleSwitch_Struct struct {
 	animation *foundations.Animation	
 }
 
-func CreateToggle(
+func NewToggle(
 	canvas *Canvas_Struct, 
 	masterStruct intf.Displayable,
 	name string,
@@ -235,11 +235,13 @@ func (t *ToggleSwitch_Struct) Click(alive *bool, pressAction int, pos_x, pos_y f
 	}	
 }
 func (t *ToggleSwitch_Struct) SetPos(x, y, z float32) { 
-	t.posX = x
+	var padding float32 = 10
+	t.posX = x + t.writing.GetWidth() + padding
+	t.togglePos =  x + t.writing.GetWidth() + padding
 	t.posY = y 
 	t.posZ = z
 	t.GeneratePolygons()
-	t.writing.SetPosition(t.posX + t.width + t.height + 10, t.posY + t.height/2, t.posZ,)
+	t.writing.SetPosition(x + t.writing.GetWidth()/2 , t.posY + t.height/2, t.posZ,)
 	t.clickable.SetClickBounds(t.posX, t.posX + t.slaveWidth, t.posY, t.posY + t.slaveHeight)
 }
 func (t *ToggleSwitch_Struct) GetPos() (float32, float32, float32) { return t.posX, t.posY, t.posZ }
