@@ -104,6 +104,8 @@ func CreateToggle(
 		t.GeneratePolygons()
 		t.clickable.SetClickBounds(t.posX, t.posX + t.slaveWidth, t.posY, t.posY + t.slaveHeight)
 
+		canvas.GetWindow().GetMouseHandler().RegisterClickableToHandler(&t)
+
 		return &t	
 }
 

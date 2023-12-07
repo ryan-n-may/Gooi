@@ -8,9 +8,11 @@ import (
 	intf 		"gooi/interfaces"
 	cons 		"gooi/base/constants"
 	foundations "gooi/base/components/foundation"
+	colours 	"gooi/base/colours"
+	"fmt"
 )
 type Rectangle_Struct struct {
-	canvas 			*Canvas_Struct
+	canvas 			intf.Canvas_Interface
 	masterStruct 	intf.Displayable
 
 	name 			string
@@ -25,9 +27,11 @@ type Rectangle_Struct struct {
 	slaveWidth, slaveHeight float32
 
 	drawable *foundations.Drawable
+
+	fillStyle int
 }
 func NewRectangle(
-	canvas 				*Canvas_Struct, 
+	canvas 				intf.Canvas_Interface, 
 	masterStruct		intf.Displayable,
 	name 				string,
 	width, height 		float32,
@@ -35,6 +39,7 @@ func NewRectangle(
 	radius				float32, 
 	colour  			[3]float32,
 	fill_style   		int,
+	position_style 		int,
 ) *Rectangle_Struct {
 	var r = Rectangle_Struct{
 		canvas, 
@@ -51,15 +56,23 @@ func NewRectangle(
 			masterStruct,
 			canvas.GetWidth(), canvas.GetHeight(),
 		),
+		fill_style,
 	}
 
 	if fill_style == cons.FILL_MASTER_DIMENSIONS {
 		r.slaveWidth = masterStruct.GetWidth()
 		r.slaveHeight = masterStruct.GetHeight()
-		r.posX, r.posY, r.posZ = masterStruct.GetPos()
 	} else {
 		r.slaveHeight = height
 		r.slaveWidth = width
+		r.posX = pos_x
+		r.posY = pos_y
+		r.posZ = pos_z
+	}
+
+	if position_style == cons.MATCH_MASTER_POSITION {
+		r.posX, r.posY, r.posZ = masterStruct.GetPos()
+	} else {
 		r.posX = pos_x
 		r.posY = pos_y
 		r.posZ = pos_z
@@ -73,17 +86,30 @@ func NewRectangle(
 // Generates the VAO array of the polygons used to draw the button. 
 // Stores the VAO in intf.Drawing_Struct alongisde the drawing mode (gl.TRIANGLE or gl.TRIANGLE_FAN)
 func (r *Rectangle_Struct) GeneratePolygons(){
-	r.drawable.ClearPolygons()
-	r.drawable.CreateRoundedRectangle(r.colour, r.slaveWidth, r.slaveHeight, r.posX, r.posY, r.posZ, r.radius)
+	if r.fillStyle == cons.FILL_MASTER_DIMENSIONS {
+		r.slaveWidth = r.masterStruct.GetWidth()
+		fmt.Printf("Slave width is = %v\n", r.slaveWidth)
+		r.slaveHeight = r.masterStruct.GetHeight()
+		r.posX, r.posY, r.posZ = r.masterStruct.GetPos()
+		fmt.Println("\t\tREDRAWING USING NEW SIZE!!!!")
+	}
+	if r.colour != colours.NONE {
+		r.drawable.ClearPolygons()
+		r.drawable.CreateRoundedRectangle(r.colour, r.slaveWidth, r.slaveHeight, r.posX, r.posY, r.posZ, r.radius)
+	}
 }
 // Draw()
 // This method draws the VAO array to gl using the canvas program.
 func (r *Rectangle_Struct) Draw() {
-	r.drawable.Draw()
+	if r.colour != colours.NONE {
+		r.drawable.Draw()
+	}
 }
 func (r *Rectangle_Struct) Redraw() {
-	r.GeneratePolygons()
-	r.drawable.Draw()
+	if r.colour != colours.NONE {
+		r.GeneratePolygons()
+		r.drawable.Draw()
+	}
 }
 
 func (r *Rectangle_Struct) GetWidth() float32 {

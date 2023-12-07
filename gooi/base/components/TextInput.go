@@ -12,7 +12,7 @@ import (
 )
 
 type TextInput struct {
-	canvas 			*Canvas_Struct
+	canvas 			intf.Canvas_Interface
 	masterStruct 	intf.Displayable
 	name 			string
 	placeholder 	string
@@ -21,6 +21,7 @@ type TextInput struct {
 
 	keylistener 	*list.KeyHandler_Struct
 	input 			*foundations.Input
+	prompt 			*foundations.Writing
 
 	posX, posY, posZ float32
 
@@ -29,7 +30,7 @@ type TextInput struct {
 }
 
 func NewTextInput(
-	canvas 					*Canvas_Struct,
+	canvas 					intf.Canvas_Interface,
 	masterStruct			intf.Displayable,
 	name 					string,
 	placeholder 			string,
@@ -53,6 +54,16 @@ func NewTextInput(
 		radius,
 		colour,
 		cons.NO_FILL,
+		cons.MATCH_MASTER_POSITION,
+	)
+
+	textInput.prompt = foundations.NewWriting(
+		canvas, 
+		masterStruct,
+		name,
+		pos_x, pos_y, pos_z, 
+		canvas.GetWidth(), canvas.GetHeight(),
+		font_path, font_name, font_size,
 	)
 
 	textInput.canvas = canvas
@@ -80,6 +91,8 @@ func NewTextInput(
 	textInput.slaveWidth 	= textInput.input.GetWidth()
 	textInput.slaveHeight 	= textInput.input.GetHeight()
 
+	canvas.GetWindow().GetMouseHandler().RegisterClickableToHandler(&textInput)
+
 	textInput.GeneratePolygons()
 
 	return &textInput
@@ -96,17 +109,22 @@ func (t *TextInput) GetWidth() float32 { return t.input.GetWidth() }
 func (t *TextInput) GetHeight() float32 { return t.input.GetHeight() }
 
 func (t *TextInput) Draw() { 
+	t.prompt.Draw()
 	t.inputbox.Draw()
 	t.input.Draw() 
 }
 func (t *TextInput) Redraw() { 
 	t.GeneratePolygons()
+	t.prompt.Draw()
 	t.inputbox.Draw()
 	t.input.Draw() 
 }
 
 func (t *TextInput) SetPos(x, y, z float32) {
-	t.input.SetPos(x, y, z)
+	var padding float32 = 10
+	t.prompt.SetPosition(x + t.prompt.GetWidth()/2, y + t.prompt.GetHeight()/2, z)
+	t.inputbox.SetPos(x + t.prompt.GetWidth() + padding, y, z)
+	t.input.SetPos(x + t.prompt.GetWidth() + padding, y, z)
 }
 
 func (t *TextInput) GetPos() (float32, float32, float32) {

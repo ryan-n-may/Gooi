@@ -8,7 +8,7 @@ import (
 	foundations "gooi/base/components/foundation"
 )
 type Label_Struct struct {
-	canvas 						*Canvas_Struct
+	canvas 						intf.Canvas_Interface
 	masterStruct 				intf.Displayable
 	name 						string
 	posX, posY, posZ 			float32
@@ -18,8 +18,8 @@ type Label_Struct struct {
 	openGLWindowHeight 			float32
 	writing 					*foundations.Writing
 }
-func CreateLabel(
-	canvas *Canvas_Struct, 
+func NewLabel(
+	canvas intf.Canvas_Interface, 
 	masterStruct intf.Displayable,
 	name string,
 	pos_x, pos_y, pos_z float32, 

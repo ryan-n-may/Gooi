@@ -14,4 +14,6 @@ var (
 
 	GREEN  		= [3]float32{67, 252, 50}
 	RED  		= [3]float32{254, 24, 24}
+
+	NONE 		= [3]float32{-1, -1, -1}
 )

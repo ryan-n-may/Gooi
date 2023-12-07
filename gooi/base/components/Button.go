@@ -2,7 +2,6 @@ package components
 /**
  * Updated 11/11/2023.
  * Button Component.
- * Implements Drawable -> Component -> Clickable.
  **/
 import (
 	glfw 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -18,7 +17,7 @@ import (
 )
 
 type Button struct {
-	canvas 			*Canvas_Struct
+	canvas 			intf.Canvas_Interface
 	masterStruct 	intf.Displayable
 	componentName	string
 
@@ -46,8 +45,8 @@ type Button struct {
 	buttonBodyColour [3]float32
 }
 
-func CreateButton(
-	canvas 					*Canvas_Struct, 
+func NewButton(
+	canvas 					intf.Canvas_Interface, 
 	masterStruct 			intf.Displayable,
 	name 					string,
 	width, height 			float32,
@@ -78,6 +77,7 @@ func CreateButton(
 	b.animation = foundation.NewAnimation(b.animationFunctions, animation_time)
 	b.writing.SetPosition(pos_x + width/2, pos_y + height/2, b.posZ)
 	b.GeneratePolygons()
+	canvas.GetWindow().GetMouseHandler().RegisterClickableToHandler(&b)
    	return &b
 }
 

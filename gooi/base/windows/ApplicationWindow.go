@@ -12,6 +12,7 @@ import (
 )
 var (
 	resizing bool
+	oldResizing bool
 )
 
 type ApplicationWindow_Struct struct {
@@ -142,6 +143,7 @@ func (A *ApplicationWindow_Struct) RunWindow() {
 	A.GetWindow().SetSizeCallback(A.resizeCallback)
 	log.Println("[Window] loop refreshes canvas, polls events, and executes event queue.")
 	for !A.Window.ShouldClose(){
+		if resizing { A.GetWindowCanvas().Redraw() }
 		A.GetWindowCanvas().RefreshCanvas()
 		glfw.PollEvents()
 		A.GetWindowCanvas().GetEventHandler().ExecuteNextEvent()
@@ -166,19 +168,18 @@ func (A* ApplicationWindow_Struct) resizeCallback(window *glfw.Window, width int
 	if !resizing {
 		resizing = true
 		go A.resizeTimeout()
+		A.resize()
 	}
 }
 
 func (A* ApplicationWindow_Struct) resizeTimeout(){
-	time.Sleep(250 * time.Millisecond)
+	time.Sleep(100 * time.Millisecond)
 	resizing = false
-	A.resize()
+	A.resize() 
 }
 
-func (A* ApplicationWindow_Struct) resize() {
+func (A* ApplicationWindow_Struct) resize(){
 	var window_w, window_h = A.Window.GetSize()
 	*A.Width = float32(window_w)
 	*A.Height = float32(window_h)
-	A.GetWindowCanvas().Redraw()
-	A.GetWindowCanvas().RefreshCanvas()
 }

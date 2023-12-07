@@ -25,13 +25,14 @@ type Tabs struct {
 	// master box that stores all components of tabs 
 	// and column structure to store button row and stacked tabs
 	masterTabBox 		*Box
-	tabColumn 			*Column	
+	masterColumn		*Column	
 	// button row to store buttons for each tab
 	tabButtonBox 		*Box
 	tabButtonRow 		*Row
 	tabButton 			[]*comp.Button
 	// actual boxes (super imposed)
 	// needs a rectangular background element to do correct z-position overlaying. 
+	tabStackBox 		*Box
 	tabStack  	 		*Stack
 	tabs  	 			[]*Box
 }
@@ -60,57 +61,49 @@ func NewTabComposition(
 		x, y, z,
 		// master struct of these nested structs are the struct being created now.
 		// so we must initialise these later to avoid throwing an error. 
-		nil, nil, nil, nil, nil, nil, nil,
+		nil, nil, nil, nil, nil, nil, nil, nil,
 	}
+
 	/** Creating container that holds everything **/
-	tabs.masterTabBox = NewBoxComposition(
+	(&tabs).masterTabBox = NewBoxComposition(
 		fmt.Sprintf("%s_masterBox", name),
 		canvas, 
 		masterStruct,
-		0, 0, 0, 1, 1,
+		0, 0, 0, slaveWidthRatio, slaveHeightRatio,
 		cons.ALIGN_TOP_LEFT,
-		colours.WHITE,
+		colours.NONE,
 	)
-	/** Creating the column that holds the buttons and tab boxes **/
-	tabs.tabColumn = NewColumnComposition(
-		fmt.Sprintf("%s_column", name),
+
+	(&tabs).masterColumn = NewColumnComposition(
+		fmt.Sprintf("%s_masterColumn", name),
 		canvas,
-		tabs.masterTabBox,
-		0, 0, 0, 1, 1, 
-		cons.ALIGN_CENTRE_COLUMN,
-	)
-	/** Creating the tab button row **/
-	tabs.tabButtonBox = NewBoxComposition(
-		fmt.Sprintf("%s_tabs_button_box", name),
-		canvas,
-		tabs.tabColumn,
-		0, 0, 0, 1, 1,
+		(&tabs).masterTabBox,
+		0, 0, 0,
 		cons.ALIGN_TOP_LEFT,
-		colours.RED,
-	)
-	tabs.tabButtonRow = NewRowComposition(
-		fmt.Sprintf("%s_tabs_button_row", name),
-		canvas,
-		tabs.tabButtonBox,
-		0, 0, 0, 1, 1,
-		cons.ALIGN_CENTRE_ROW,
 	)
 	
-	/** Creating the buttons **/
-	tabs.tabButton = make([]*comp.Button, len(labels))
+	(&tabs).tabButtonRow = NewRowComposition(
+		fmt.Sprintf("%s_tabs_button_row", name),
+		canvas,
+		(&tabs).masterColumn,
+		0, 0, 0, 
+		cons.ALIGN_TOP,
+	)
+
+	(&tabs).tabButton = make([]*comp.Button, len(labels))
 	for i, label := range labels {
 		fmt.Printf("Creating tab button with label %s\n", label)
 		var event_arguments = event.NewEventParameter(i)
 		// creating event 
 		var selectTab_event = &event.Event_Struct{
-			tabs.MoveToFront, 
+			(&tabs).MoveToFront, 
 			fmt.Sprintf("selectTab_%v", i),
 			event_arguments,
 		}
-		tabs.tabButton[i] = comp.CreateButton(
+		(&tabs).tabButton[i] = comp.NewButton(
 			canvas,
-			tabs.tabButtonRow,
-			fmt.Sprintf("%s_button_%v_%s", name, i, label),
+			(&tabs).tabButtonRow,
+			label,
 			100, 20,
 			5,
 			0, 0, 0, 
@@ -119,8 +112,18 @@ func NewTabComposition(
 			selectTab_event,
 			100,
 		)
-		canvas.GetWindow().GetMouseHandler().RegisterClickableToHandler(tabs.tabButton[i])
+		canvas.GetWindow().GetMouseHandler().RegisterClickableToHandler((&tabs).tabButton[i])
 	}
+	
+
+	(&tabs).tabStackBox = NewBoxComposition(
+		fmt.Sprintf("%s_tabs_stack_box", name),
+		canvas,
+		(&tabs).masterColumn,
+		0, 0, 0, 1.0, 0.9,
+		cons.ALIGN_TOP_LEFT,
+		colours.LIGHT_BLUE,
+	)
 
 	/** Creating tabs (boxes) based upon given labels **/
 	var alignment = []int{}
@@ -128,61 +131,56 @@ func NewTabComposition(
 		alignment =  append(alignment, cons.ALIGN_TOP_LEFT)
 	}
 
-	fmt.Printf("Alignment is %v\n", alignment)
-
-	tabs.tabStack = NewStackComposition(
+	(&tabs).tabStack = NewStackComposition(
 		fmt.Sprintf("%s_tabBox", name),
 		canvas, 
-		tabs.tabColumn,
-		0, 0, 0, 0.5, 0.5, 
+		tabs.tabStackBox,
+		0, 0, 0, 1, 1, 
 		alignment,
 	)
 
-	tabs.tabs = make([]*Box, len(labels))
+	(&tabs).tabs = make([]*Box, len(labels))
 	for i, label := range labels {
 		fmt.Printf("Creating tab box for label %s %v\n", label, i)
-		tabs.tabs[i] = NewBoxComposition(
+		(&tabs).tabs[i] = NewBoxComposition(
 			fmt.Sprintf("%s_tab_%s", name, label), 
 			canvas, 
-			tabs.tabStack,	
+			(&tabs).tabStack,	
 			0, 0, 0, 1, 1, 
 			cons.ALIGN_TOP_LEFT,
-			colours.GRAY,
+			colours.LIGHT_GRAY,
 		)
 	}
-	
-	// initial arragement of layout
-	for i, _ := range tabs.tabButton {
-		tabs.tabButtonRow.AddDisplayable(tabs.tabButton[i])
-	}
-	tabs.tabButtonBox.AddDisplayable(tabs.tabButtonRow)
 
-	for i, _ := range tabs.tabs {
-		tabs.tabStack.AddDisplayable(tabs.tabs[i])
-	}
+	for _, tab := range (&tabs).tabs { (&tabs).tabStack.AddDisplayable(tab) }
+	(&tabs).tabStackBox.AddDisplayable((&tabs).tabStack)
 
-	tabs.tabColumn.AddDisplayable(tabs.tabButtonBox)
-	tabs.tabColumn.AddDisplayable(tabs.tabStack)
+	for _, button := range (&tabs).tabButton { (&tabs).tabButtonRow.AddDisplayable(button) }
 
-	tabs.masterTabBox.AddDisplayable(tabs.tabColumn)
+	(&tabs).masterColumn.AddDisplayable((&tabs).tabStackBox)
+	(&tabs).masterColumn.AddDisplayable((&tabs).tabButtonRow)
+
+	(&tabs).masterTabBox.AddDisplayable((&tabs).masterColumn)
 
 	return &tabs
 }
 
 func (tabs *Tabs) MoveToFront(param intf.Paramaters_Interface) {
 	var Index = param.GetParameters().(int)
+	fmt.Printf("Moving %v to the front\n", Index)
 	for i, _ := range tabs.tabs {
 		var x, y, _ = tabs.tabs[i].GetPos()
 		tabs.tabs[i].SetPos(x, y, 0.0) 
 	}
 	var x, y, _ = tabs.tabs[Index].GetPos()
 	tabs.tabs[Index].SetPos(x, y, 1.0) 
-	tabs.Redraw()
-
+	tabs.Draw()
 }
 
 func (tabs *Tabs) ArrangeLayout() {
-	//tabs.masterTabBox.ArrangeLayout()
+	tabs.masterTabBox.ArrangeLayout()
+	tabs.slaveWidth = tabs.masterTabBox.GetWidth()
+	tabs.slaveHeight = tabs.masterTabBox.GetHeight()	
 }
 
 func (tabs *Tabs) Draw(){
@@ -190,7 +188,6 @@ func (tabs *Tabs) Draw(){
 }
 
 func (tabs *Tabs) Redraw(){
-	tabs.ArrangeLayout()
 	tabs.masterTabBox.Redraw()
 }
 
@@ -208,8 +205,8 @@ func (tabs *Tabs) AddDisplayable(displayable intf.Displayable, tab int) {
 	tabs.tabs[tab].AddDisplayable(displayable)
 }
 
-func (tabs *Tabs) GetWidth() float32 { return tabs.slaveWidth }
-func (tabs *Tabs) GetHeight() float32 { return tabs.slaveHeight }
+func (tabs *Tabs) GetWidth() float32 { return tabs.masterTabBox.GetWidth() }
+func (tabs *Tabs) GetHeight() float32 { return tabs.masterTabBox.GetHeight() }
 
 func (tabs *Tabs) SetWidth(w float32) { tabs.slaveWidth = w }
 func (tabs *Tabs) SetHeight(h float32) { tabs.slaveHeight = h }

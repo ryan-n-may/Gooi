@@ -16,7 +16,7 @@ import (
 	fmt "fmt"
 )
 type CheckBox_Struct struct {
-	canvas *Canvas_Struct
+	canvas intf.Canvas_Interface
 	masterStruct intf.Displayable
 
 	name string
@@ -40,8 +40,8 @@ type CheckBox_Struct struct {
 	animationFunctions []func()
 }
 
-func CreateCheckbox(
-	canvas 					*Canvas_Struct, 
+func NewCheckbox(
+	canvas 					intf.Canvas_Interface, 
 	masterStruct 			intf.Displayable,
 	name 					string,
 
@@ -106,6 +106,9 @@ func CreateCheckbox(
 	b.writing.SetPosition(b.posX + b.writing.GetWidth()/2 + b.radius*2, b.posY + b.slaveHeight/2 , b.posZ)
 
 	b.GeneratePolygons()
+
+	canvas.GetWindow().GetMouseHandler().RegisterClickableToHandler(&b)
+	
    	return &b
 }
 
@@ -159,10 +162,10 @@ func (b *CheckBox_Struct) Click(alive *bool, pressAction int, pos_x, pos_y float
 }
 
 func (b *CheckBox_Struct) SetPos(x, y, z float32) { 
-	b.posX = x + b.radius
-	b.posY = y + b.radius
+	b.posX = x 
+	b.posY = y 
 	b.posZ = z
-	b.writing.SetPosition(b.posX + b.writing.GetWidth()/2 + b.radius*2, b.posY + b.writing.GetHeight()/2 , b.posZ)
+	b.writing.SetPosition(b.posX + b.writing.GetWidth()/2 + b.radius*3, b.posY + b.writing.GetHeight()/2 , b.posZ)
 	b.GeneratePolygons()
 	b.clickable.SetClickBounds(b.posX, b.posX+b.radius*2, b.posY, b.posY+b.radius*2)
 	b.Redraw()
