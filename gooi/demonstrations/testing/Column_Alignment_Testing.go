@@ -37,9 +37,9 @@ func main() {
 	Row2.AddDisplayable(comp.NewButton(A.WindowCanvas, Row2, "button_2", 100, 30, 5, 0, 0, 0, "luxi", "base/components/fonts/luxi.ttf", 16, &event.NULL_EVENT, 200))
 	Row2.AddDisplayable(comp.NewButton(A.WindowCanvas, Row2, "button_3", 100, 30, 5, 0, 0, 0, "luxi", "base/components/fonts/luxi.ttf", 16, &event.NULL_EVENT, 200))
 	
-	var Label1 = comp.NewLabel(A.WindowCanvas, columnComposition, "     Label1   ", 0, 0, 0, "luxi", "base/components/fonts/luxi.ttf", 16)
+	var Label1 = comp.NewLabel(A.WindowCanvas, columnComposition, "Label1   ", 0, 0, 0, "luxi", "base/components/fonts/luxi.ttf", 16)
 
-	var ToggleSwitch1 = comp.NewToggle(A.WindowCanvas, columnComposition, "      Toggle:", 50, 30, 0, 0, 0, "luxi", "base/components/fonts/luxi.ttf", 16, &event.NULL_EVENT)
+	var ToggleSwitch1 = comp.NewToggle(A.WindowCanvas, columnComposition, "Toggle:", 50, 30, 0, 0, 0, "luxi", "base/components/fonts/luxi.ttf", 16, &event.NULL_EVENT)
 
 	columnComposition.AddDisplayable(Checkbox1)
 	columnComposition.AddDisplayable(Box1)

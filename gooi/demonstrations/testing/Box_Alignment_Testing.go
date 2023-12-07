@@ -6,7 +6,6 @@ import (
 	windows 	"gooi/base/windows"
 	ompo   		"gooi/base/compositions"
 	cons        "gooi/base/constants"
-	comp 		"gooi/base/components"
 	colours     "gooi/base/colours"
 )
 
@@ -54,41 +53,8 @@ func main() {
 		topLeftComposition,
 		0, 0, 0, 0.1, 0.1,
 		cons.ALIGN_CENTRE,
-		colours.DARK_BLUE,
+		colours.RED,
 	)
-	var topLeftRow = ompo.NewRowComposition( 
-		"column",
-		A.WindowCanvas, 
-		topLeftBox,
-		0, 0, 0, 1, 1,
-		cons.ALIGN_CENTRE_ROW,
-	)
-	var topLeftRowBox1 = ompo.NewBoxComposition( 
-		"box4",
-		A.WindowCanvas, 
-		topLeftRow,
-		0, 0, 0, 0.25, 1,
-		cons.ALIGN_CENTRE,
-		colours.GREEN,
-	)
-	var topLeftRowBox2 = ompo.NewBoxComposition( 
-		"box4",
-		A.WindowCanvas, 
-		topLeftRow,
-		0, 0, 0, 0.25, 1,
-		cons.ALIGN_CENTRE,
-		colours.GREEN,
-	)
-	var topLeftRowButton1 = comp.CreateButton(
-		A.WindowCanvas, topLeftRowBox2, "B",
-		5, 20, 1, 0, 0, 0,
-		"luxi", "base/components/fonts/luxi.ttf", 8,
-		&event.NULL_EVENT, 200,
-	)
-	topLeftRowBox1.AddDisplayable(topLeftRowButton1)
-	topLeftRow.AddDisplayable(topLeftRowBox1)
-	topLeftRow.AddDisplayable(topLeftRowBox2)
-	topLeftBox.AddDisplayable(topLeftRow)
 	topLeftComposition.AddDisplayable(topLeftBox)
 	var topRightBox = ompo.NewBoxComposition( 
 		"box4",

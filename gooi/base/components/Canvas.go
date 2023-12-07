@@ -115,9 +115,6 @@ func (c *Canvas_Struct) GetHeight() float32 { return *c.CanvasWindow.GetWindowHe
 
 func (c *Canvas_Struct) SetPos(x, y, z float32) { //nothing 
 }
-func (c *Canvas_Struct) GetPos() (float32, float32, float32) {
-	return 0, 0, 0
-}
-
+func (c *Canvas_Struct) GetPos() (float32, float32, float32) { return 0, 0, 0 }
 func (c *Canvas_Struct) GetMasterStruct() intf.Displayable { return c }
 func (c *Canvas_Struct) SetMasterStruct(master intf.Displayable) { c.masterStruct = master }

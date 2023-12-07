@@ -6,7 +6,6 @@ import (
 	intf 	"gooi/interfaces"
 	fmt  	"fmt"
 	runtime "runtime"
-	colours "gooi/base/colours"
 	log 	"log"
 	time 	"time"
 )
@@ -26,8 +25,6 @@ type ApplicationWindow_Struct struct {
 	CloseMethod func()
 	OpenMethod func() 
 	err error
-
-	Theme *colours.Theme
 }
 func NewWindow(title string, width, height float32) *ApplicationWindow_Struct {
 	log.Println("new [Window] struct created.")
@@ -51,15 +48,6 @@ func NewWindow(title string, width, height float32) *ApplicationWindow_Struct {
 	return &window
 }
 
-func (A *ApplicationWindow_Struct) SetTheme(theme *colours.Theme) {
-	log.Println("new [Theme] struct applied to [Window].")
-	A.Theme = theme
-	A.SetBackgroundColour(A.Theme.WindowBackground)
-}
-
-func (A *ApplicationWindow_Struct) GetTheme() *colours.Theme {
-	return A.Theme
-}
 
 func void() {}
 func (A *ApplicationWindow_Struct) SetWindow(w *glfw.Window) { A.Window = w }
