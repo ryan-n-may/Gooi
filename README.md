@@ -5,11 +5,11 @@ An openGL based GUI framework built for desktop Golang applications. Student Pro
 ![OpenGL](https://img.shields.io/badge/OpenGL-%23FFFFFF.svg?style=for-the-badge&logo=opengl)
 
 ## Contents 
-- ![Window and Canvas](#the-window-and-canvas)
-- ![Important Interface](#important-interfaces)
-- ![Constants](#constants)
-- ![Components](#components)
-- ![Compositions](#compositions)
+- [Window and Canvas](#the-window-and-canvas)
+- [Important Interface](#important-interfaces)
+- [Constants](#constants)
+- [Components](#components)
+- [Compositions](#compositions)
 - Events
 - Key and Mouse Listeners
   
