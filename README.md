@@ -19,8 +19,12 @@ This is a student project, open to any contributions suggestions and extensions!
 - ![Column Alignment Demonstration](https://github.com/ryan-n-may/Gooi/blob/main/gooi/demonstrations/testing/Column_Alignment_Testing.go)
 - ![Row Alignment Demonstration](https://github.com/ryan-n-may/Gooi/blob/main/gooi/demonstrations/testing/Row_Alignment_Testing.go)
 - ![Box Alignment Demonstration](https://github.com/ryan-n-may/Gooi/blob/main/gooi/demonstrations/testing/Box_Alignment_Testing.go)
+
   
 # Usage 
+
+> go get github.com/ryan-n-may/Gooi/gooi/
+
 ## The Window and Canvas
 ### Application window
 
