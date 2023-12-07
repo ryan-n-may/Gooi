@@ -473,7 +473,9 @@ compositions.NewBoxComposition(name string, canvas intf.Canvas_Interface, master
 ```
 - `slaveWidthRatio` and `slaveHeightRatio` refers to a fractional proportion of the masterStruct dimensions.
 - ie: `(0.5, 0.5)` would indicate that the box composition takes up 1/4 of the masterStruct dimensisons.
+  
 ![BoxAlignment](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/box_alignment.png)
+
 ### Stack composition
 - Stack composition is an extension of box that allows for multiple `intf.Displayable` structs to the displayed in the same composition, with unique alignments.
 ```golang
@@ -490,7 +492,9 @@ compositions.NewStackComposition(name string, canvas intf.Canvas_Interface, x, y
 ```golang
 compositions.NewColumnComposition(name string, canvas intf.Canvas_Interface, masterStruct intf.Displayable, x, y, z float32, alignment int)
 ```
+
 ![ColumnAlignment](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/column_alignment.png)
+
 ### Row composition
 - The row composition organises `intf.Displayable` structs in a horisontal line.
 - the slaveWidth and slaveHeight of this composition are not defined explicity, but instead obtained via the addition of the slave dimensions of all composition displayables plus padding.
@@ -501,14 +505,98 @@ compositions.NewColumnComposition(name string, canvas intf.Canvas_Interface, mas
 ```golang
 compositions.NewRowComposition(name string, canvas intf.Canvas_Interface, masterStruct intf.Displayable, x, y, z float32, alignment int)
 ```
+
 ![RowAlignment](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/row_alignment.png)
+
 ### Tabs composition (Alpha)
 - The tabbed composition allows for multiple box compositions to be switched between via the use of a row of selection buttons.
 ``` golang
 compositions.NewTabComposition(name string, canvas intf.Canvas_Interface, masterStruct intf.Displayable, eventHandler intf.EventHandler_Interface, mouseHandler intf.MouseHandler_Interface, labels []string, x, y, z, slaveWithRatio, slaveHeightRatio float32, font_name, font_path, font_size string)
 ```
 
+## Event Handling
 
+> import gooi/base/event
+
+- in Gooi, events are handled by an event handler. Each program cycle, the event handler selects an event from the event queue, and executes the associated function.
+- Selecting displayables that implement the clickable interface adds a given event to the event handler queue.
+- Events are stored in a map which associates event names with function calls. The event queue stores event names only. For this reason all events must have unique names.
+### Event Handler
+> #### Creating an event handler
+> ```golang
+> event.NewEventHandler() *EventHandler_Struct
+> ```
+> #### Assigning an event hander to the canvas
+> ```golang
+> (c intf.Canvas_Interface).SetEventHandler(e *EventHandler_Struct)
+> ```
+> #### Registering a new event to the handler 
+> This is handled internally by displayables that implement the clickable interface. 
+> ```golang
+> (e *EventHandler_Struct).RegisterEventToHandler(ev intf.Event_Interface)
+> ```
+> #### Add event to event queue
+> This is handled internally by displayables that implement the clickable interface.
+> ```golang
+> (e *EventHandler_Struct).AddEventToEventQueue(ev string)
+> ```
+> #### Execute next event
+> Handled internally by the window loop.
+> ```golang
+> (e *EventHandler_Struct).ExecuteNextEvent()
+> ```
+> #### Skip next event
+> Pops event queue without executing
+> ```golang
+> (e *EventHandler_Struct).SkipNextEvent()
+> ```
+### Event 
+> #### Create new event
+> ```golang
+> event.NewEvent(name string, f func(intf.Paramaters_Interface), params intf.Paramaters_Interface) *event.Event_Struct
+> ```
+> #### Set/Get Name
+> ```golang
+> (e *Event_Struct).SetName(s string)
+> (e *Event_Struct).GetName() string
+> ```
+> #### Set/Get Method
+> ```golang
+> (e *Event_Struct).SetMethod(f func(intf.Paramaters_Interface))
+> (e *Event_Struct).GetMethod() func(intf.Paramaters_Interface)
+> ```
+> #### Set/Get ParamaterStruct
+> ```golang
+> (e *Event_Struct).SetParamaterStruct(p intf.Paramaters_Interface)
+> (e *Event_Struct).GetParamaterStruct() intf.Paramaters_Interface
+> ```
+### Event Paramaters
+> #### New event paramater
+> ```golang
+> event.NewEventParamater(p any) intf.Paramaters_Interface
+> ```
+> #### Set/Get Paramaters
+> ```golang
+> (p *Event_Paramaters).SetParamaters(param any)
+> (p *Event_Paramaters).GetParamaters() any 
+> ```
+
+## Mouse Handler
+> ### New mouse handler
+> ```golang
+> listeners.CreateMouseHandler(name string) *MouseHandler_Struct
+> ```
+> ### Assigning mouse handler
+> ```golang
+> (c intf.Canvas_Interface).SetMouseHandler(ci intf.Clickable)
+> ```
+
+## Key Handler
+> ### New key handler
+> ```golang
+> listeners.CreateKeyListener(name string, canvas intf.Canvas_Interface) *KeyHandler_Struct
+> ```
+> - The key handler is not set to the canvas, but instead passed to editable components that implement the input compositional struct (layout package)
 
 
 
