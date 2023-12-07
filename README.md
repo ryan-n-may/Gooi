@@ -1,4 +1,4 @@
-# Gooi: A Golang GUI Framework
+# <img src="https://github.com/ryan-n-may/Gooi/blob/main/readme/Gooi.png" width="60"> Gooi: A Golang GUI Framework 
 An openGL based GUI framework built for desktop Golang applications. Student Project. 
 
 ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
