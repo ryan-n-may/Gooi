@@ -13,6 +13,11 @@ An openGL based GUI framework built for desktop Golang applications. Student Pro
 - [Events](#event-handling)
 - [Mouse Handler](#mouse-handler)
 - [Key Handler](#key-handler)
+
+# Demonstrations
+- ![Column Alignment Demonstration](https://github.com/ryan-n-may/Gooi/blob/main/gooi/demonstrations/testing/Column_Alignment_Testing.go)
+- ![Row Alignment Demonstration](https://github.com/ryan-n-may/Gooi/blob/main/gooi/demonstrations/testing/Row_Alignment_Testing.go)
+- ![Box Alignment Demonstration](https://github.com/ryan-n-may/Gooi/blob/main/gooi/demonstrations/testing/Box_Alignment_Testing.go)
   
 # Usage 
 ## The Window and Canvas
