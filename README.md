@@ -1,13 +1,8 @@
 # Gooi: A Golang GUI Framework
-
 An openGL based GUI framework built for desktop Golang applications. 
-
-
-![mascot](Gooi.png)
 
 ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
 ![OpenGL](https://img.shields.io/badge/OpenGL-%23FFFFFF.svg?style=for-the-badge&logo=opengl)
-![Go-gl](https://avatars.githubusercontent.com/u/2505184?s=48&v=4)
 
 ## Contents 
 - Dependencies 
@@ -24,7 +19,13 @@ These components are based upon the foundation structs (see foundation package i
 
 The implementation of these compositional structs are listed for each of the displayable components in this section.
 ### Button 
-The Button composition implements in Animation, Clickable, Drawable, and Writing compositional struct. 
+The Button composition implements Animation, Clickable, Drawable, and Writing compositional struct. 
+
+![Button](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/button.png)
+
+<details>
+  <summary>Button struct</summary>
+  
 ```golang
 type Button struct {
 canvas intf.Canvas_Interface
@@ -43,8 +44,41 @@ animation *foundation.Animation
 buttonBodyColour [3]float32
 }
 ```
+
+</details>
+
 ```golang
-components.NewButton(intf.Canvas_Interface, intf.Displayable, Name (String), Width, Height, Radius, PosX, PosY, PosZ (Float32), FontName, FontPath (String), FontSize (Int), ButtonEvent (*event.Event_Struct), AniamtionTime (time.Duration))
+components.NewButton(intf.Canvas_Interface, MasterStruct (intf.Displayable), Name (String), Width, Height, Radius, PosX, PosY, PosZ (Float32), FontName, FontPath (String), FontSize (Int), ButtonEvent (*event.Event_Struct), AniamtionTime (time.Duration))
 ```
+
+### Label 
+The Label composition implements the Writing compositional struct. 
+
+![Button](https://github.com/ryan-n-may/Gooi/blob/main/readme/screenshots/button.png)
+
+<details>
+  <summary>Label struct</summary>
+  
+```golang
+type Label struct {
+canvas intf.Canvas_Interface
+masterStruct intf.Displayable
+name string
+posX, posY, posZ float32
+masterWidth, masterHeight float32 
+slaveWidth, slaveHeight float32 
+openGLWindowWidth float32 
+openGLWindowHeight float32
+writing *foundations.Writing
+}
+```
+
+</details>
+
+```golang
+components.NewLabel(intf.Canvas_Interface, MasterStruct (intf.Displayable), Name (String), PosX, PosY, PosZ (Float32), FontName, FontPath (String), FontSize (Int))
+```
+
+
 
 
